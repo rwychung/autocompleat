@@ -21,5 +21,7 @@ def state2():
         if (GPIO.input(23) == 1):
             sleep(0.3)
             return state1()
+            
+            #test commit
 
 state1()
