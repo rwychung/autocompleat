@@ -1,0 +1,3 @@
+[submodule "lib/Adafruit_PWM_Servo_Driver"]
+	path = lib/Adafruit_PWM_Servo_Driver
+	url = https://github.com/adafruit/Adafruit_Python_PCA9685.git
