@@ -29,10 +29,10 @@ rodCarriageStepsPerRev = 200
 leadScrewStepsPerRev = 200
 
 def mm2Steps(mm):
-    return stepsPerMM*mm
+    return rodCarriageStepsPerMM*mm
 
 def speed2Freq(rpm):
-    return stepsPerRev * rpm / 60
+    return rodCarraigeStepsPerRev * rpm / 60
 
 # Set direction of motor
 GPIO.output(dirPin, GPIO.HIGH)
