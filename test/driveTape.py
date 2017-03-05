@@ -14,8 +14,8 @@ Z_AXIS_RESET_PIN = 31
 Z_AXIS_STEP_PWM_CHANNEL = 9
 
 # CONFIG
-Z_STEPS_PER_MM = 25
-Z_STEPS_PER_REV = 200
+TAPE_MM_PER_REV = 39.7
+TAPE_STEPS_PER_REV = 200
 PWM_PULSE_LENGTH = 4096
 
 GPIO.setmode(GPIO.BOARD)
@@ -28,10 +28,10 @@ GPIO.setup(Z_AXIS_DIR_PIN, GPIO.OUT)
 GPIO.setup(Z_AXIS_RESET_PIN, GPIO.OUT)
 
 def mm2Steps(mm):
-    return Z_STEPS_PER_MM * mm
+    return mm / TAPE_MM_PER_REV * TAPE_STEPS_PER_REV
 
 def speed2Freq(rpm):
-    return Z_STEPS_PER_REV * rpm / 60
+    return TAPE_STEPS_PER_REV * rpm / 60
 
 pwmFreq = speed2Freq(120)
 PWM.set_pwm_freq(pwmFreq)
@@ -59,7 +59,7 @@ while True:
     time.sleep(1 / pwmFreq * mm2Steps(dist))
     """
 
-    # Lower board by 100mm
+    # move tape by 10 mm
     PWM.set_pwm(Z_AXIS_STEP_PWM_CHANNEL, 0, PWM_PULSE_LENGTH//2)
     sleep_time = mm2Steps(dist) / pwmFreq
     print("Sleep for %f seconds") % sleep_time

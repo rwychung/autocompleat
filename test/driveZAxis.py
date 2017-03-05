@@ -39,7 +39,7 @@ print("Runnning at %d Hz") % pwmFreq
 
 GPIO.output(Z_AXIS_DIR_PIN, GPIO.LOW)
 
-start = raw_input("Press enter to start ")
+start = raw_input("Press enter to start (default dir is down) ")
 if start == '0':
         GPIO.output(Z_AXIS_DIR_PIN, GPIO.LOW)
 if start == '1':
