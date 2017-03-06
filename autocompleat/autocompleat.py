@@ -3,23 +3,33 @@ import Adafruit_GPIO
 import Adafruit_PCA9685
 
 import pins
+import motor
 import platform
 
 def startEventLoop():
     # Create MCP and PWM hat objects
-    mcp = [Adafruit_GPIO.MCP230xx(pins.MCP23017_0_ADDR),
-           Adafruit_GPIO.MCP230xx(pins.MCP23017_1_ADDR),
-           Adafruit_GPIO.MCP230xx(pins.MCP23017_2_ADDR)]
+
+    mcpList = [Adafruit_GPIO.MCP230xx(addr) for addr in pins.MCP23017_ADDR]
     pwm = Adafruit_PCA9685.PCA9685()
 
     # Initialize pins of MCP
+    for i, mcp in enumerate(mcpList):
+        for j in mcp.NUM_GPIO:
+            mcp.setup(j, pins.MCP23017_PINS[i][j])
+            if pins.MCP23017_PINS[i][j] == RPi.GPIO.IN:
+                mcp.pullup(j, True)
+
+    # Create motor objects
+    leadScrewMotor = motor.StepperMotor(mcp[pins.Z_AXIS_MCP],
+                                        pwm,
+                                        pins.Z_AXIS_DIR_PIN,
+                                        pins.Z_AXIS_RESET_PIN,
+                                        pins.Z_AXIS_STEP_PWM_CHANNEL)
 
     # Create component objects
-    platform = platform.Platform(mcp[0],
-                                 pwm,
-                                 pins.Z_AXIS_DIR_PIN,
-                                 pins.Z_AXIS_RESET_PIN,
-                                 pins.Z_AXIS_STEP_PWM_CHANNEL)
+    platform = platform.Platform(leadScrewMotor)
+
+    # Enable components
     platform.enable()
 
     while True:
