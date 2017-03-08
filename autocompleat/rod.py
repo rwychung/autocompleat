@@ -12,8 +12,14 @@ class Rod(object):
         self.limit = limitSwitch
         self.homeDir = homeDir
 
-    def move(self, mm, speed):
+        # Setup limit switch interrupt here
         pass
+
+    def move(self, mm, speed):
+        """speed = mm/s"""
+        steps = self._mm2steps(mm*homeDir)
+        rpm = self._angVel2Rpm(speed)
+        self.carriage.step(steps, rpm)
 
     def startSpin(self, spinDir, speed):
         pass
@@ -22,4 +28,11 @@ class Rod(object):
         pass
 
     def home(self):
-        pass
+        self.move(config.MACHINE_LENGTH, 1)
+        #
+
+    def _mm2steps(self, mm):
+        return config.CARR_STEPS_PER_MM  * mm
+
+    def _angVel2Rpm(self, angVel):
+        return angSpeed * 60 * config.CARR_STEPS_PER_REV

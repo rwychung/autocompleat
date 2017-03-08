@@ -12,7 +12,6 @@ class StepperMotor(object):
         self.resetPin = resetPin
         self.stepsPerRev = stepsPerRev
         self.pwmChannel = pwmChannel
-        self.disable()
 
     def enable(self):
         self.mcp.output(self.resetPin, config.STEPPER_ENABLE)

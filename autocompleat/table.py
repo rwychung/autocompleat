@@ -15,20 +15,18 @@ class Table(object):
     def lift(self, mm, speed):
         """speed = mm/s"""
         steps = self._mm2Steps(mm)
-        rpm = self._mmPerS2Rpm(speed)
-        print(rpm)
+        rpm = self._speed2Rpm(speed)
         self.leadScrew.step(steps, rpm, config.Z_DIR_RAISE)
 
     def lower(self, mm, speed):
         steps = self._mm2Steps(mm)
-        rpm = self._mmPerS2Rpm(speed)
-        print(rpm)
+        rpm = self._speed2Rpm(speed)
         self.leadScrew.step(steps, rpm, config.Z_DIR_LOWER)
 
     def _mm2Steps(self, mm):
         return config.Z_STEPS_PER_MM * mm
 
-    def _mmPerS2Rpm(self, speed):
+    def _speed2Rpm(self, speed):
         return speed * 60 * config.Z_MM_PER_REV
 
     def enable(self):
