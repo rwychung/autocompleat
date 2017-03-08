@@ -22,3 +22,4 @@ class Rod(object):
         pass
 
     def home(self):
+        pass
