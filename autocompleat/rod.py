@@ -6,10 +6,11 @@ import motor
 
 class Rod(object):
 
-    def __init__(self, carriageMotor, rodMotor, limitSwitch):
+    def __init__(self, carriageMotor, rodMotor, limitSwitch, homeDir):
         self.carriage = carriageMotor
         self.rod = rodMotor
         self.limit = limitSwitch
+        self.homeDir = homeDir
 
     def move(self, mm, speed):
         pass
@@ -19,3 +20,5 @@ class Rod(object):
 
     def stopSpin(self):
         pass
+
+    def home(self):

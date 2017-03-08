@@ -43,3 +43,9 @@ class StepperMotor(object):
 
     def _rpm2Freq(rpm):
         return self.stepsPerRev * rpm / 60
+
+class ServoMotor(object):
+    pass
+
+class DCMotor(object):
+    pass
