@@ -44,4 +44,24 @@ class ServoMotor(object):
     pass
 
 class DCMotor(object):
-    pass
+
+    def __init__(self, mcp, pwm, dirPin, pwmChannel):
+        self.mcp = mcp
+        self.pwm = pwm
+        self.dirPin = dirPin
+        self.pwmChannel = pwmChannel
+
+    def rotate(self, rpm, rotDir = config.DC_CW):
+        # Set direction
+        self.mcp.output(self.dirPin, rotDir)
+
+        # Set speed
+        rpm = min(rpm, config.DC_MAX_RPM)
+        print("DC motor rpm: %f" % rpm)
+        # self.pwm.set_pwm_freq(config.DEFAULT_PWM_FREQ)
+        pwmPulseLength = rpm / config.DC_MAX_RPM * config.PWM_PULSE_LENGTH
+        print("PWM pulse length: %f" % pwmPulseLength)
+        self.pwm.set_pwm(self.pwmChannel, 0, pwmPulseLength)
+
+    def stop(self):
+        self.rotate(0)

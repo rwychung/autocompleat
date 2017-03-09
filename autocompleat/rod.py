@@ -6,14 +6,10 @@ import motor
 
 class Rod(object):
 
-    def __init__(self, carriageMotor, rodMotor, limitSwitch, homeDir):
+    def __init__(self, carriageMotor, rodMotor, homeDir):
         self.carriage = carriageMotor
         self.rod = rodMotor
-        self.limit = limitSwitch
         self.homeDir = homeDir
-
-        # Setup limit switch interrupt here
-        pass
 
     def move(self, mm, speed):
         """speed = mm/s"""
@@ -21,18 +17,17 @@ class Rod(object):
         rpm = self._angVel2Rpm(speed)
         self.carriage.step(steps, rpm)
 
-    def startSpin(self, spinDir, speed):
-        pass
+    def startRot(self, rotDir, rpm):
+        self.rod.rotate(rpm, rotDir)
 
     def stopSpin(self):
-        pass
+        self.rod.rotate(0)
 
     def home(self):
         self.move(config.MACHINE_LENGTH, 1)
-        #
 
     def _mm2steps(self, mm):
         return config.CARR_STEPS_PER_MM  * mm
 
     def _angVel2Rpm(self, angVel):
-        return angSpeed * 60 * config.CARR_STEPS_PER_REV
+        return angSpeed * 60 / config.CARR_STEPS_PER_REV
