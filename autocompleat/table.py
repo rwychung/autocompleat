@@ -16,13 +16,10 @@ class Table(object):
         steps = self._mm2Steps(mm)
         rpm = self._speed2Rpm(speed)
         print("Table rpm: %f" % rpm)
-        self.leadScrew.step(steps, rpm, config.Z_DIR_RAISE)
+        self.leadScrew.step(steps, rpm)
 
     def lower(self, mm, speed):
-        steps = self._mm2Steps(mm)
-        rpm = self._speed2Rpm(speed)
-        print("Table rpm: %f" % rpm)
-        self.leadScrew.step(steps, rpm, config.Z_DIR_LOWER)
+        self.lift(-mm, speed)
 
     def _mm2Steps(self, mm):
         return config.Z_STEPS_PER_MM * mm

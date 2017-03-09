@@ -58,19 +58,106 @@ def startEventLoop():
     rodXObj = rod.Rod(rodCarrXMotor, rodXMotor, config.ROD_X_AXIS_HOME)
     rodYObj = rod.Rod(rodCarrYMotor, rodYMotor, config.ROD_Y_AXIS_HOME)
 
-    # Enable components
+    # Enable table motors
     tableObj.enable()
+    rodXObj.enable()
+    rodYObj.enable()
 
     while True:
-        dist = 1
-        a = raw_input("Press enter to decrease height by %f mm: " % dist)
-        if a == '0':
-            tableObj.lower(dist, 1)
-        if a == '1':
-            tableObj.lift(dist, 1)
-        if a == 'q':
+        ctrl = raw_input("""Control the following:
+                          [t - table
+                           rx - x rod
+                           ry - y rod
+                           q - quit]""")
+        if ctrl == 't':
+            while True:
+                dist = 1
+                a = raw_input("""
+                0 - lift dist of %d
+                1 - lower dist of %d
+                2 - enable table
+                3 - disable table
+                """ % (dist, dist))
+
+                if a == '0':
+                    tableObj.lift(dist, 1)
+                elif a == '1':
+                    tableObj.lower(dist, 1)
+                elif a == '2':
+                    tableObj.enable()
+                elif a == '3':
+                    tableObj.disable()
+                elif a == 'q':
+                    break
+                else:
+                    pass
+        elif ctrl == 'rx':
+            while True:
+                dist = 1
+                a = raw_input("""
+                0 - move dist of %d clockwise
+                1 - move dist of %d counter clockwise
+                2 - rotate rod clockwise
+                3 - rotate rod counter clockwise
+                4 - enable carraige motor
+                5 - disable carriage motor
+                6 - stop rod
+                q - quit""" % (dist, dist))
+
+                if a == '0':
+                    rodXObj.move(dist, 1)
+                elif a == '1':
+                    rodXObj.move(-dist, 1)
+                elif a == '2':
+                    rodXObj.rotate(1, config.ROT_CW)
+                elif a == '3':
+                    rodXObj.rotate(1, config.ROT_CCW)
+                elif a == '4':
+                    rodXObj.enable()
+                elif a == '5':
+                    rodXObj.disable()
+                elif a == '6':
+                    rodXObj.stop()
+                elif a == 'q':
+                    break
+                else:
+                    pass
+        elif ctrl == 'ry':
+            while True:
+                dist = 1
+                a = raw_input("""
+                0 - move dist of %d clockwise
+                1 - move dist of %d counter clockwise
+                2 - rotate rod clockwise
+                3 - rotate rod counter clockwise
+                4 - enable carraige motor
+                5 - disable carriage motor
+                6 - stop rod
+                q - quit""" % (dist, dist))
+
+                if a == '0':
+                    rodYObj.move(dist, 1)
+                elif a == '1':
+                    rodYObj.move(-dist, 1)
+                elif a == '2':
+                    rodYObj.rotate(1, config.ROT_CW)
+                elif a == '3':
+                    rodYObj.rotate(1, config.ROT_CCW)
+                elif a == '4':
+                    rodYObj.enable()
+                elif a == '5':
+                    rodYObj.disable()
+                elif a == '6':
+                    rodYObj.stop()
+                elif a == 'q':
+                    break
+                else:
+                    pass
+        elif ctrl == 'q':
             break
-        pass
+        else:
+            pass
+
 
 if __name__ == "__main__":
     print("Starting autocompleat event loop...")

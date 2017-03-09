@@ -1,3 +1,5 @@
+from __future__ import division
+
 import Adafruit_GPIO
 import Adafruit_PCA9685
 
@@ -10,24 +12,32 @@ class Rod(object):
         self.carriage = carriageMotor
         self.rod = rodMotor
         self.homeDir = homeDir
+        self.disable()
 
     def move(self, mm, speed):
         """speed = mm/s"""
-        steps = self._mm2steps(mm*homeDir)
-        rpm = self._angVel2Rpm(speed)
+        steps = self._mm2steps(mm) * self.homeDir
+        rpm = self._angSpeed2Rpm(speed)
         self.carriage.step(steps, rpm)
 
-    def startRot(self, rotDir, rpm):
+    def rotate(self, rpm, rotDir = config.ROT_CW):
         self.rod.rotate(rpm, rotDir)
 
-    def stopSpin(self):
+    def stop(self):
         self.rod.rotate(0)
 
     def home(self):
         self.move(config.MACHINE_LENGTH, 1)
 
+    def enable(self):
+        self.carriage.enable()
+
+    def disable(self):
+        self.carriage.disable()
+        self.rod.stop()
+
     def _mm2steps(self, mm):
         return config.CARR_STEPS_PER_MM  * mm
 
-    def _angVel2Rpm(self, angVel):
+    def _angSpeed2Rpm(self, angSpeed):
         return angSpeed * 60 / config.CARR_STEPS_PER_REV
