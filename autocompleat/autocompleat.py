@@ -6,8 +6,9 @@ import pins
 import config
 
 import motor
-import table
 import rod
+import table
+import tape
 
 def startEventLoop():
     # Create MCP and PWM hat objects
@@ -52,16 +53,69 @@ def startEventLoop():
                               pins.ROD_Y_AXIS_DIR_PIN,
                               pins.ROD_Y_AXIS_STEP_PWM_CHANNEL)
 
+    tapeCarrXLeftMotor = motor.StepperMotor(mcpList[pins.TAPECARR_MCP],
+                                            pwm,
+                                            pins.TAPECARR_X_AXIS_LEFT_DIR_PIN,
+                                            pins.TAPECARR_X_AXIS_LEFT_RST_PIN,
+                                            pins.TAPECARR_X_AXIS_LEFT_STEP_PWM_CHANNEL,
+                                            config.CARR_STEPS_PER_REV)
+    tapeCarrXRightMotor = motor.StepperMotor(mcpList[pins.TAPECARR_MCP],
+                                            pwm,
+                                            pins.TAPECARR_X_AXIS_RIGHT_DIR_PIN,
+                                            pins.TAPECARR_X_AXIS_RIGHT_RST_PIN,
+                                            pins.TAPECARR_X_AXIS_RIGHT_STEP_PWM_CHANNEL,
+                                            config.CARR_STEPS_PER_REV)
+    tapeCarrYMotor = motor.StepperMotor(mcpList[pins.TAPECARR_MCP],
+                                       pwm,
+                                       pins.TAPECARR_Y_AXIS_DIR_PIN,
+                                       pins.TAPECARR_Y_AXIS_RST_PIN,
+                                       pins.TAPECARR_Y_AXIS_STEP_PWM_CHANNEL,
+                                       config.CARR_STEPS_PER_REV)
+
+    tapeXLeftMotor = motor.StepperMotor(mcpList[pins.TAPE_MCP],
+                                        pwm,
+                                        pins.TAPE_X_AXIS_LEFT_DIR_PIN,
+                                        pins.TAPE_X_AXIS_LEFT_RST_PIN,
+                                        pins.TAPE_X_AXIS_LEFT_STEP_PWM_CHANNEL,
+                                        config.TAPE_STEPS_PER_REV)
+    tapeXRightMotor = motor.StepperMotor(mcpList[pins.TAPE_MCP],
+                                         pwm,
+                                         pins.TAPE_X_AXIS_RIGHT_DIR_PIN,
+                                         pins.TAPE_X_AXIS_RIGHT_RST_PIN,
+                                         pins.TAPE_X_AXIS_RIGHT_STEP_PWM_CHANNEL,
+                                         config.TAPE_STEPS_PER_REV)
+    tapeYMotor = motor.StepperMotor(mcpList[pins.TAPE_MCP],
+                                    pwm,
+                                    pins.TAPE_Y_AXIS_DIR_PIN,
+                                    pins.TAPE_Y_AXIS_RST_PIN,
+                                    pins.TAPE_Y_AXIS_STEP_PWM_CHANNEL,
+                                    config.TAPE_STEPS_PER_REV)
+
+    tapeCamXLeftMotor = motor.ServoMotor(pwm,
+                                           pins.TAPECAM_X_AXIS_LEFT_STEP_PWM_CHANNEL)
+    tapeCamXRightMotor = motor.ServoMotor(pwm,
+                                            pins.TAPECAM_X_AXIS_RIGHT_STEP_PWM_CHANNEL)
+    tapeCamYMotor = motor.ServoMotor(pwm,
+                                       pins.TAPECAM_Y_AXIS_STEP_PWM_CHANNEL)
 
     # Create component objects
     tableObj = table.Table(leadScrewMotor)
     rodXObj = rod.Rod(rodCarrXMotor, rodXMotor, config.ROD_X_AXIS_HOME)
     rodYObj = rod.Rod(rodCarrYMotor, rodYMotor, config.ROD_Y_AXIS_HOME)
+    tapeXLeftObj = tape.Tape(tapeCarrXLeftMotor, tapeXLeftMotor, tapeCamXLeftMotor,
+                             config.TAPE_X_AXIS_LEFT_HOME)
+    tapeXRightObj = tape.Tape(tapeCarrXRightMotor, tapeXRightMotor, tapeCamXRightMotor,
+                             config.TAPE_X_AXIS_RIGHT_HOME)
+    tapeYObj = tape.Tape(tapeCarrYMotor, tapeYMotor, tapeCamYMotor,
+                             config.TAPE_Y_AXIS_HOME)
 
     # Enable table motors
     tableObj.enable()
     rodXObj.enable()
     rodYObj.enable()
+    tapeXLeftObj.enable()
+    tapeXRightObj.enable()
+    tapeYObj.enable()
 
     while True:
         ctrl = raw_input("""Control the following:
@@ -109,9 +163,9 @@ def startEventLoop():
                 elif a == '1':
                     rodXObj.move(-dist, 1)
                 elif a == '2':
-                    rodXObj.rotate(1, config.ROT_CW)
+                    rodXObj.rotate(config.DC_MAX_RPM, config.ROT_CW)
                 elif a == '3':
-                    rodXObj.rotate(1, config.ROT_CCW)
+                    rodXObj.rotate(config.DC_MAX_RPM, config.ROT_CCW)
                 elif a == '4':
                     rodXObj.enable()
                 elif a == '5':
@@ -140,9 +194,9 @@ def startEventLoop():
                 elif a == '1':
                     rodYObj.move(-dist, 1)
                 elif a == '2':
-                    rodYObj.rotate(1, config.ROT_CW)
+                    rodYObj.rotate(config.DC_MAX_RPM, config.ROT_CW)
                 elif a == '3':
-                    rodYObj.rotate(1, config.ROT_CCW)
+                    rodYObj.rotate(config.DC_MAX_RPM, config.ROT_CCW)
                 elif a == '4':
                     rodYObj.enable()
                 elif a == '5':

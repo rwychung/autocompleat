@@ -47,7 +47,24 @@ class StepperMotor(object):
         return self.stepsPerRev * rpm / 60
 
 class ServoMotor(object):
-    pass
+
+    def __init__(self, pwm, pwmChannel, pwmFreq = config.SERVO_PWM_FREQ,
+                                        transTime = config.SERVO_TRANS_TIME):
+        self.pwm = pwm
+        self.pwmChannel = pwmChannel
+        self.pwmFreq = pwmFreq
+        self.pwmTransTime = transTime
+
+    def setPos(self, pos):
+        # Saturates position
+        pos = min(pos, config.PWM_PULSE_LENGTH)
+
+        self.pwm.set_pwm_freq(self.pwmFreq)
+        self.pwm.set_pwm(pos)
+
+        # Calculate time the servo needs to sleep for
+        # Currently sleeps for the maximum time needed to go from min to max position
+        time.sleep(pwmTransTime)
 
 class DCMotor(object):
 
@@ -63,6 +80,7 @@ class DCMotor(object):
 
         # Set direction
         self.mcp.output(self.dirPin, rotDir)
+        print("DC motor dir pin %d: %d" % (self.dirPin, rotDir))
 
         # Set speed
         rpm = min(rpm, config.DC_MAX_RPM)
