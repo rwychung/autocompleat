@@ -55,16 +55,27 @@ class ServoMotor(object):
         self.pwmFreq = pwmFreq
         self.pwmTransTime = transTime
 
-    def setPos(self, pos):
+    def setRot(self, rot):
         # Saturates position
-        pos = min(pos, config.PWM_PULSE_LENGTH)
+        if rot < config.SERVO_MIN_ROT:
+            rot = config.SERVO_MIN_ROT
+        if rot > config.SERVO_MAX_ROT:
+            rot = config.SERVO_MAX_ROT
+
+        print("Servo pwm channel: %f" % self.pwmChannel)
+        print("Servo pwm freq: %f" % self.pwmFreq)
+        print("Servo rot: %f degrees" % rot)
+
+        pulses = int(rot / config.SERVO_MAX_ROT * (config.SERVO_MAX_PULSE - config.SERVO_MIN_PULSE) + config.SERVO_MIN_PULSE)
+        print("Servo pulse: %f" % pulses)
 
         self.pwm.set_pwm_freq(self.pwmFreq)
-        self.pwm.set_pwm(pos)
+        self.pwm.set_pwm(self.pwmChannel, 0, pulses)
 
-        # Calculate time the servo needs to sleep for
+        # TODO: Calculate time the servo needs to sleep for
         # Currently sleeps for the maximum time needed to go from min to max position
-        time.sleep(pwmTransTime)
+        print("Servo sleep for: %f second" % self.pwmTransTime)
+        time.sleep(self.pwmTransTime)
 
 class DCMotor(object):
 

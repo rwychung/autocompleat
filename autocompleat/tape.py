@@ -1,5 +1,8 @@
+from __future__ import division
+
 import RPi
 
+import config
 import motor
 
 class Tape(object):
@@ -23,14 +26,11 @@ class Tape(object):
     def retract(self, mm, speed):
         self.extend(-mm, speed)
 
-    def lift(self, mm):
-        pos = config.PWM_PULSE_LENGTH
-        self.cam.setPos()
-
-    def lower(self, mm):
+    def setCamHeight(self, mm):
         # TODO: do some math to conver mm to pos
-        pos = config.PWM_PULSE_LENGTH
-        self.cam.setPos()
+        mm = min(mm, config.TAPE_CAM_LENGTH)
+        rot = mm/config.TAPE_CAM_LENGTH * config.SERVO_MAX_ROT
+        self.cam.setRot(rot)
 
     def home(self, mm, speed):
         pass

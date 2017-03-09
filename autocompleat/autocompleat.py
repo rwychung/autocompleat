@@ -122,6 +122,9 @@ def startEventLoop():
                           [t - table
                            rx - x rod
                            ry - y rod
+                           txl - x left tape
+                           txr - x right tape
+                           ty - y tape
                            q - quit]""")
         if ctrl == 't':
             while True:
@@ -203,6 +206,111 @@ def startEventLoop():
                     rodYObj.disable()
                 elif a == '6':
                     rodYObj.stop()
+                elif a == 'q':
+                    break
+                else:
+                    pass
+        elif ctrl == 'txl':
+            while True:
+                dist = 1
+                extDist = 1
+                a = raw_input("""
+                0 - move dist of %d clockwise
+                1 - move dist of %d counter clockwise
+                2 - extend tape dist of %d
+                3 - retract tape dist of %d
+                4 - set cam min position
+                5 - set cam max position
+                6 - enable carraige and tape motor
+                7 - disable carriage and tape motor
+                q - quit""" % (dist, dist, extDist, extDist))
+
+                if a == '0':
+                    tapeXLeftObj.move(dist, 1)
+                elif a == '1':
+                    tapeXLeftObj.move(-dist, 1)
+                elif a == '2':
+                    tapeXLeftObj.extend(extDist, 1)
+                elif a == '3':
+                    tapeXLeftObj.retract(extDist, 1)
+                elif a == '4':
+                    tapeXLeftObj.setCamHeight(0)
+                elif a == '5':
+                    tapeXLeftObj.setCamHeight(config.TAPE_CAM_LENGTH)
+                elif a == '6':
+                    tapeXLeftObj.enable()
+                elif a == '7':
+                    tapeXLeftObj.disable()
+                elif a == 'q':
+                    break
+                else:
+                    pass
+        elif ctrl == 'txr':
+            while True:
+                dist = 1
+                extDist = 1
+                a = raw_input("""
+                0 - move dist of %d clockwise
+                1 - move dist of %d counter clockwise
+                2 - extend tape dist of %d
+                3 - retract tape dist of %d
+                4 - set cam min position
+                5 - set cam max position
+                6 - enable carraige and tape motor
+                7 - disable carriage and tape motor
+                q - quit""" % (dist, dist, extDist, extDist))
+
+                if a == '0':
+                    tapeXRightObj.move(dist, 1)
+                elif a == '1':
+                    tapeXRightObj.move(-dist, 1)
+                elif a == '2':
+                    tapeXRightObj.extend(extDist, 1)
+                elif a == '3':
+                    tapeXRightObj.retract(extDist, 1)
+                elif a == '4':
+                    tapeXRightObj.setCamHeight(0)
+                elif a == '5':
+                    tapeXRightObj.setCamHeight(config.TAPE_CAM_LENGTH)
+                elif a == '6':
+                    tapeXRightObj.enable()
+                elif a == '7':
+                    tapeXRightObj.disable()
+                elif a == 'q':
+                    break
+                else:
+                    pass
+        elif ctrl == 'ty':
+            while True:
+                dist = 1
+                extDist = 1
+                a = raw_input("""
+                0 - move dist of %d clockwise
+                1 - move dist of %d counter clockwise
+                2 - extend tape dist of %d
+                3 - retract tape dist of %d
+                4 - set cam min position
+                5 - set cam max position
+                6 - enable carraige and tape motor
+                7 - disable carriage and tape motor
+                q - quit""" % (dist, dist, extDist, extDist))
+
+                if a == '0':
+                    tapeYObj.move(dist, 1)
+                elif a == '1':
+                    tapeYObj.move(-dist, 1)
+                elif a == '2':
+                    tapeYObj.extend(extDist, 1)
+                elif a == '3':
+                    tapeYObj.retract(extDist, 1)
+                elif a == '4':
+                    tapeYObj.setCamHeight(0)
+                elif a == '5':
+                    tapeYObj.setCamHeight(config.TAPE_CAM_LENGTH)
+                elif a == '6':
+                    tapeYObj.enable()
+                elif a == '7':
+                    tapeYObj.disable()
                 elif a == 'q':
                     break
                 else:
