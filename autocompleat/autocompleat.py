@@ -24,12 +24,12 @@ def startEventLoop():
                 mcp.pullup(j, True)
 
     # Create motor objects
-    leadScrewMotor = motor.StepperMotor(mcpList[pins.Z_AXIS_MCP],
+    leadScrewMotor = motor.StepperMotor(mcpList[pins.TABLE_MCP],
                                         pwm,
-                                        pins.Z_AXIS_DIR_PIN,
-                                        pins.Z_AXIS_RST_PIN,
-                                        pins.Z_AXIS_STEP_PWM_CHANNEL,
-                                        config.Z_STEPS_PER_REV)
+                                        pins.TABLE_DIR_PIN,
+                                        pins.TABLE_RST_PIN,
+                                        pins.TABLE_STEP_PWM_CHANNEL,
+                                        config.TABLE_STEPS_PER_REV)
 
     rodCarrXMotor = motor.StepperMotor(mcpList[pins.RODCARR_MCP],
                                        pwm,

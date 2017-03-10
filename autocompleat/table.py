@@ -22,10 +22,10 @@ class Table(object):
         self.lift(-mm, speed)
 
     def _mm2Steps(self, mm):
-        return config.Z_STEPS_PER_MM * mm
+        return config.TABLE_STEPS_PER_MM * mm
 
     def _speed2Rpm(self, speed):
-        return speed * 60 / config.Z_MM_PER_REV
+        return speed * 60 / config.TABLE_MM_PER_REV
 
     def enable(self):
         self.leadScrew.enable()
