@@ -68,6 +68,11 @@ MCP23017_PINS = [
 # Adafruit PWM hat address
 PWM_HAT_ADDR = 0x40
 
+###################
+#   PI Interrupt  #
+###################
+PI_INT_GPIO = 21
+
 ##################
 #   Pin Layout   #
 ##################
