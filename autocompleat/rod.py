@@ -8,9 +8,10 @@ import motor
 
 class Rod(object):
 
-    def __init__(self, carriageMotor, rodMotor, homeDir):
+    def __init__(self, carriageMotor, rodMotor, limitSwitch, homeDir):
         self.carriage = carriageMotor
         self.rod = rodMotor
+        self.limitSwitch = limitSwitch
         self.homeDir = homeDir
         self.disable()
 

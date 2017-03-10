@@ -7,10 +7,11 @@ import motor
 
 class Tape(object):
 
-    def __init__(self, carriageMotor, tapeMotor, camMotor, homeDir):
+    def __init__(self, carriageMotor, tapeMotor, camMotor, limitSwitch, homeDir):
         self.carriage = carriageMotor
         self.tape = tapeMotor
         self.cam = camMotor
+        self.limitSwitch = limitSwitch
         self.homeDir = homeDir
 
     def move(self, mm, speed):

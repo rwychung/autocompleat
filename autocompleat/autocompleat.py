@@ -5,6 +5,7 @@ import Adafruit_PCA9685.PCA9685
 import pins
 import config
 
+import limit
 import motor
 import rod
 import table
@@ -22,6 +23,24 @@ def startEventLoop():
             mcp.setup(j, pins.MCP23017_PINS[i][j])
             if pins.MCP23017_PINS[i][j] == RPi.GPIO.IN:
                 mcp.pullup(j, True)
+
+    # Initialize interrupt on MCP
+
+    # Initialize interrupt pin on the Pi
+    RPi.GPIO.setup(pins.PI_INT_PIN, RPi.GPIO.IN, pull_up_down=RPi.GPIO.PUD_UP)
+
+    # Create limit switch objects
+    tableLimit = limit.LimitSwitch(pins.LIMIT_MCP, pins.PI_INT_PIN, pins.TABLE_LIMIT_PIN)
+    rodCarrXLimit = limit.LimitSwitch(pins.LIMIT_MCP, pins.PI_INT_PIN,
+                                      pins.RODCARR_X_AXIS_LIMIT_PIN)
+    rodCarrYLimit = limit.LimitSwitch(pins.LIMIT_MCP, pins.PI_INT_PIN,
+                                      pins.RODCARR_Y_AXIS_LIMIT_PIN)
+    tapeCarrXLeftLimit = limit.LimitSwitch(pins.LIMIT_MCP, pins.PI_INT_PIN,
+                                           pins.TAPECARR_X_AXIS_LEFT_LIMIT_PIN)
+    tapeCarrXRightLimit = limit.LimitSwitch(pins.LIMIT_MCP, pins.PI_INT_PIN,
+                                            pins.TAPECARR_X_AXIS_RIGHT_LIMIT_PIN)
+    tapeCarrYLimit = limit.LimitSwitch(pins.LIMIT_MCP, pins.PI_INT_PIN,
+                                            pins.TAPECARR_Y_AXIS_LIMIT_PIN)
 
     # Create motor objects
     leadScrewMotor = motor.StepperMotor(mcpList[pins.TABLE_MCP],
@@ -99,15 +118,15 @@ def startEventLoop():
                                        pins.TAPECAM_Y_AXIS_STEP_PWM_CHANNEL)
 
     # Create component objects
-    tableObj = table.Table(leadScrewMotor)
-    rodXObj = rod.Rod(rodCarrXMotor, rodXMotor, config.ROD_X_AXIS_HOME)
-    rodYObj = rod.Rod(rodCarrYMotor, rodYMotor, config.ROD_Y_AXIS_HOME)
+    tableObj = table.Table(leadScrewMotor, tableLimit, config.TABLE_HOME_DIR)
+    rodXObj = rod.Rod(rodCarrXMotor, rodXMotor, rodCarrXLimit, config.ROD_X_AXIS_HOME_DIR)
+    rodYObj = rod.Rod(rodCarrYMotor, rodYMotor, rodCarrYLimit,  config.ROD_Y_AXIS_HOME_DIR)
     tapeXLeftObj = tape.Tape(tapeCarrXLeftMotor, tapeXLeftMotor, tapeCamXLeftMotor,
-                             config.TAPE_X_AXIS_LEFT_HOME)
+                             tapeCarrXLeftLimit, config.TAPE_X_AXIS_LEFT_HOME_DIR)
     tapeXRightObj = tape.Tape(tapeCarrXRightMotor, tapeXRightMotor, tapeCamXRightMotor,
-                             config.TAPE_X_AXIS_RIGHT_HOME)
+                             tapeCarrXRightLimit, config.TAPE_X_AXIS_RIGHT_HOME_DIR)
     tapeYObj = tape.Tape(tapeCarrYMotor, tapeYMotor, tapeCamYMotor,
-                             config.TAPE_Y_AXIS_HOME)
+                         tapeCarrYLimit, config.TAPE_Y_AXIS_HOME_DIR)
 
     # Enable table motors
     tableObj.enable()

@@ -14,10 +14,12 @@ class StepperMotor(object):
         self.pwmChannel = pwmChannel
 
     def enable(self):
+        self.pwm.set_pwm(self.pwmChannel, 0, 0)
         self.mcp.output(self.resetPin, config.STEPPER_ENABLE)
 
     def disable(self):
         self.mcp.output(self.resetPin, config.STEPPER_DISABLE)
+        self.pwm.set_pwm(self.pwmChannel, 0, 0)
 
     def step(self, steps, rpm):
         stepDir = 0
