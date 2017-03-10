@@ -72,14 +72,14 @@ PWM_HAT_ADDR = 0x40
 #   Pin Layout   #
 ##################
 
-# Z axis lead screw pin layout
-Z_AXIS_MCP = 0
-Z_AXIS_DIR_PIN = 14
-Z_AXIS_RST_PIN = 15
-Z_AXIS_STEP_PWM_CHANNEL = 9
+########## TABLE ##########
+TABLE_MCP = 0
 
-# RODS
+TABLE_DIR_PIN = 14
+TABLE_RST_PIN = 15
+TABLE_STEP_PWM_CHANNEL = 9
 
+########## ROD ##########
 # Rod carriage pin layout
 RODCARR_MCP = 0
 
@@ -94,14 +94,14 @@ RODCARR_Y_AXIS_STEP_PWM_CHANNEL = 1
 # Rod motor pin layout
 ROD_MCP = 2
 
-ROD_X_AXIS_DIR_PIN = 0
-ROD_X_AXIS_STEP_PWM_CHANNEL = 15
+ROD_X_AXIS_DIR_PIN = 2
+ROD_X_AXIS_STEP_PWM_CHANNEL = 13
 
 ROD_Y_AXIS_DIR_PIN = 1
 ROD_Y_AXIS_STEP_PWM_CHANNEL = 14
 
 # Tape measurer carriage pin layout
-TAPECARR_MCP = 2
+TAPECARR_MCP = 1
 
 TAPECARR_X_AXIS_LEFT_DIR_PIN = 12
 TAPECARR_X_AXIS_LEFT_RST_PIN = 13
@@ -116,7 +116,7 @@ TAPECARR_Y_AXIS_RST_PIN = 9
 TAPECARR_Y_AXIS_STEP_PWM_CHANNEL = 6
 
 # Tape measurer extender pin layout
-TAPE_MCP = 1
+TAPE_MCP = 2
 
 TAPE_X_AXIS_LEFT_DIR_PIN = 8
 TAPE_X_AXIS_LEFT_RST_PIN = 9
