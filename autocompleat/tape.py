@@ -22,6 +22,12 @@ class Tape(object):
         rpm = self._angSpeed2RpmCarr(speed)
         self.carriage.step(steps, rpm)
 
+    def getPosition(self):
+        return self.curPos
+
+    def getTapePosition(self):
+        return self.curTapePos
+
     def extend(self, mm, speed):
         self.curTapePos += mm
         steps = self._mm2StepsTape(mm)

@@ -7,6 +7,7 @@ import Adafruit_PureIO.smbus
 import pins
 import config
 
+import button
 import limit
 import motor
 import rod
@@ -25,6 +26,9 @@ def startEventLoop():
             mcp.setup(j, pins.MCP23017_PINS[i][j])
             if pins.MCP23017_PINS[i][j] == RPi.GPIO.IN:
                 mcp.pullup(j, True)
+
+    # Create button object
+    startButton = button.PushButton(mcpList[pins.PUSH_BUTTON_MCP], pins.PUSH_BUTTON_PIN)
 
     # Create limit switch objects
     tableLimit = limit.LimitSwitch(mcpList[pins.LIMIT_MCP], pins.TABLE_LIMIT_PIN)
@@ -125,14 +129,16 @@ def startEventLoop():
     tapeYObj.enable()
 
     while True:
-        ctrl = raw_input("""Control the following:
-                          [t - table
-                           rx - x rod
-                           ry - y rod
-                           txl - x left tape
-                           txr - x right tape
-                           ty - y tape
-                           q - quit]""")
+        ctrl = raw_input("""
+                         Control the following:
+                            t - table
+                            rx - x rod
+                            ry - y rod
+                            txl - x left tape
+                            txr - x right tape
+                            ty - y tape
+                            b - button
+                            q - quit]""")
         if ctrl == 't':
             while True:
                 dist = 1
@@ -340,6 +346,9 @@ def startEventLoop():
                     break
                 else:
                     pass
+        elif ctrl == 'b':
+            print("Waiting for button press")
+            startButton.waitForButtonPress()
         elif ctrl == 'q':
             break
         else:

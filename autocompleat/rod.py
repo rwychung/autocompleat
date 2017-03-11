@@ -23,6 +23,9 @@ class Rod(object):
         rpm = self._angSpeed2Rpm(speed)
         self.carriage.step(steps, rpm)
 
+    def getPosition(self):
+        return self.curPos
+
     def rotate(self, rpm, rotDir = config.DC_ROT_CW):
         self.rod.rotate(rpm, rotDir)
 

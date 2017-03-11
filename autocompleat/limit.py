@@ -1,3 +1,5 @@
+import time
+
 import config
 
 class LimitSwitch(object):
@@ -12,9 +14,17 @@ class LimitSwitch(object):
     def isClose(self):
         return self.mcp.input(self.limitPin) == config.LIMIT_SWITCH_CLOSE
 
-    def waitUntilClose(self):
-        # TODO: Debouncing
-        while self.limitSwitch.isOpen():
-            pass
+    def waitUntilClose(self, debounce=0):
+        debouncing = True
+        debounce = max(0, debounce)
+
+        while debouncing:
+            while self.isOpen():
+                pass
+            debouncing = False
+            if debounce:
+                time.sleep(debounce)
+                if self.isOpen():
+                    debouncing = True
         print("Switch is now closed")
 

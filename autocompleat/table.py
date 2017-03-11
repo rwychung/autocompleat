@@ -29,6 +29,9 @@ class Table(object):
         mm2Go = mm - self.curPos
         self.lift(mm2Go, speed)
 
+    def getHeight(self):
+        return self.curPos
+
     def enable(self):
         self.leadScrew.enable()
 
