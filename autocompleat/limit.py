@@ -1,15 +1,13 @@
-import RPi
+import config
 
 class LimitSwitch(object):
 
-    def __init__(self, mcp, intPin, limitPin, callback=None, debounce=0):
+    def __init__(self, mcp, limitPin):
+        self.mcp = mcp
         self.limitPin = limitPin
-        self.debounce = debounce
-        self.callback = callback
-        if self.callback:
-            self.setCallback(self.callback)
 
-    def setCallback(self, callback):
-        self.callback = callback
-        RPi.GPIO.add_event_detect(self.intPin, RPi.GPIO.FALLING,
-                                  callback=callback, bouncetime=debounce)
+    def isOpen(self):
+        return self.mcp.input(self.limitPin) == config.LIMIT_SWITCH_OPEN
+
+    def isClose(self):
+        return self.mcp.input(self.limitPin) == config.LIMIT_SWITCH_CLOSE

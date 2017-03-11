@@ -12,7 +12,6 @@ class Table(object):
         self.leadScrew = leadScrewMotor
         self.leadScrew.disable()
         self.limitSwitch = limitSwitch
-        self.limitSwitch.setCallback(self._limitHitCallback)
         self.homeDir = homeDir
         self.curPos = 0
 
@@ -37,16 +36,26 @@ class Table(object):
         self.leadScrew.disable()
 
     def home(self):
-        self.lower(config.MACHINE_HEIGHT, config.TABLE_HOME_RPM)
+        leadScrewDir = config.STEPPER_ROT_CW
+        if self.homeDir == config.HOME_DIR_NEG:
+            leadScrewDir = config.STEPPER_ROT_CCW
+
+        # Start homing
+        self.leadScrew.run(leadScrewDir, config.TABLE_HOME_RPM)
+
+        # Tight polling
+        while self.limitSwitch.isOpen():
+            print("Switch is OPEN")
+            pass
+
+        print("Switch is CLEAR")
+
+        self.disable()
+        self.enable()
+        self.curPos = 0
 
     def _mm2Steps(self, mm):
         return config.TABLE_STEPS_PER_MM * mm
 
     def _speed2Rpm(self, speed):
         return speed * 60 / config.TABLE_MM_PER_REV
-
-    def _limitHitCallback(self, channel):
-        self.disable()
-        self.enable()
-        self.curPos = 0
-        print("LOL printing callback from channel: %d" % channel)

@@ -21,7 +21,7 @@ class Rod(object):
         rpm = self._angSpeed2Rpm(speed)
         self.carriage.step(steps, rpm)
 
-    def rotate(self, rpm, rotDir = config.ROT_CW):
+    def rotate(self, rpm, rotDir = config.DC_ROT_CW):
         self.rod.rotate(rpm, rotDir)
 
     def stop(self):

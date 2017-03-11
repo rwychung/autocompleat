@@ -1,6 +1,8 @@
 import RPi
+import Adafruit_GPIO.I2C
 import Adafruit_GPIO.MCP230xx
 import Adafruit_PCA9685.PCA9685
+import Adafruit_PureIO.smbus
 
 import pins
 import config
@@ -13,8 +15,8 @@ import tape
 
 def startEventLoop():
     # Create MCP and PWM hat objects
-
-    mcpList = [Adafruit_GPIO.MCP230xx.MCP23017(address = addr, busnum = 1) for addr in pins.MCP23017_ADDR]
+    busnum = 1
+    mcpList = [Adafruit_GPIO.MCP230xx.MCP23017(address = addr, busnum = busnum) for addr in pins.MCP23017_ADDR]
     pwm = Adafruit_PCA9685.PCA9685(pins.PWM_HAT_ADDR)
 
     # Initialize pins of MCP
@@ -24,23 +26,18 @@ def startEventLoop():
             if pins.MCP23017_PINS[i][j] == RPi.GPIO.IN:
                 mcp.pullup(j, True)
 
-    # Initialize interrupt on MCP
-
-    # Initialize interrupt pin on the Pi
-    RPi.GPIO.setup(pins.PI_INT_PIN, RPi.GPIO.IN, pull_up_down=RPi.GPIO.PUD_UP)
-
     # Create limit switch objects
-    tableLimit = limit.LimitSwitch(pins.LIMIT_MCP, pins.PI_INT_PIN, pins.TABLE_LIMIT_PIN)
-    rodCarrXLimit = limit.LimitSwitch(pins.LIMIT_MCP, pins.PI_INT_PIN,
+    tableLimit = limit.LimitSwitch(mcpList[pins.LIMIT_MCP], pins.TABLE_LIMIT_PIN)
+    rodCarrXLimit = limit.LimitSwitch(mcpList[pins.LIMIT_MCP],
                                       pins.RODCARR_X_AXIS_LIMIT_PIN)
-    rodCarrYLimit = limit.LimitSwitch(pins.LIMIT_MCP, pins.PI_INT_PIN,
+    rodCarrYLimit = limit.LimitSwitch(mcpList[pins.LIMIT_MCP],
                                       pins.RODCARR_Y_AXIS_LIMIT_PIN)
-    tapeCarrXLeftLimit = limit.LimitSwitch(pins.LIMIT_MCP, pins.PI_INT_PIN,
+    tapeCarrXLeftLimit = limit.LimitSwitch(mcpList[pins.LIMIT_MCP],
                                            pins.TAPECARR_X_AXIS_LEFT_LIMIT_PIN)
-    tapeCarrXRightLimit = limit.LimitSwitch(pins.LIMIT_MCP, pins.PI_INT_PIN,
+    tapeCarrXRightLimit = limit.LimitSwitch(mcpList[pins.LIMIT_MCP],
                                             pins.TAPECARR_X_AXIS_RIGHT_LIMIT_PIN)
-    tapeCarrYLimit = limit.LimitSwitch(pins.LIMIT_MCP, pins.PI_INT_PIN,
-                                            pins.TAPECARR_Y_AXIS_LIMIT_PIN)
+    tapeCarrYLimit = limit.LimitSwitch(mcpList[pins.LIMIT_MCP],
+                                       pins.TAPECARR_Y_AXIS_LIMIT_PIN)
 
     # Create motor objects
     leadScrewMotor = motor.StepperMotor(mcpList[pins.TABLE_MCP],
@@ -153,6 +150,7 @@ def startEventLoop():
                 1 - lower dist of %d
                 2 - enable table
                 3 - disable table
+                4 - home
                 """ % (dist, dist))
 
                 if a == '0':
@@ -163,6 +161,8 @@ def startEventLoop():
                     tableObj.enable()
                 elif a == '3':
                     tableObj.disable()
+                elif a == '4':
+                    tableObj.home()
                 elif a == 'q':
                     break
                 else:
@@ -185,9 +185,9 @@ def startEventLoop():
                 elif a == '1':
                     rodXObj.move(-dist, 1)
                 elif a == '2':
-                    rodXObj.rotate(config.DC_MAX_RPM, config.ROT_CW)
+                    rodXObj.rotate(config.DC_MAX_RPM, config.DC_ROT_CW)
                 elif a == '3':
-                    rodXObj.rotate(config.DC_MAX_RPM, config.ROT_CCW)
+                    rodXObj.rotate(config.DC_MAX_RPM, config.DC_ROT_CCW)
                 elif a == '4':
                     rodXObj.enable()
                 elif a == '5':
@@ -216,9 +216,9 @@ def startEventLoop():
                 elif a == '1':
                     rodYObj.move(-dist, 1)
                 elif a == '2':
-                    rodYObj.rotate(config.DC_MAX_RPM, config.ROT_CW)
+                    rodYObj.rotate(config.DC_MAX_RPM, config.DC_ROT_CW)
                 elif a == '3':
-                    rodYObj.rotate(config.DC_MAX_RPM, config.ROT_CCW)
+                    rodYObj.rotate(config.DC_MAX_RPM, config.DC_ROT_CCW)
                 elif a == '4':
                     rodYObj.enable()
                 elif a == '5':

@@ -1,5 +1,6 @@
 from __future__ import division
 import time
+import wrapt
 
 import config
 
@@ -21,15 +22,26 @@ class StepperMotor(object):
         self.mcp.output(self.resetPin, config.STEPPER_DISABLE)
         self.pwm.set_pwm(self.pwmChannel, 0, 0)
 
+    def run(self, stepDir, rpm):
+        # Set direction
+        self.mcp.output(self.dirPin, stepDir)
+
+        # Set PWM freq
+        pwmFreq = self._rpm2Freq(rpm)
+        print("Rpm: %f" % rpm)
+        self.pwm.set_pwm_freq(pwmFreq)
+        print("PWM freq: %f" % pwmFreq)
+        self.pwm.set_pwm(self.pwmChannel, 0, config.PWM_PULSE_LENGTH//2)
+
     def step(self, steps, rpm):
-        stepDir = 0
+        stepDir = config.STEPPER_ROT_CW
         if steps < 0:
-            stepDir = 1
+            stepDir = config.STEPPER_ROT_CCW
 
         # Set direction
         self.mcp.output(self.dirPin, stepDir)
 
-        # Set PWM for stepping
+        # Set PWM freq
         pwmFreq = self._rpm2Freq(rpm)
         print("Rpm: %f" % rpm)
         self.pwm.set_pwm_freq(pwmFreq)
@@ -87,7 +99,7 @@ class DCMotor(object):
         self.dirPin = dirPin
         self.pwmChannel = pwmChannel
 
-    def rotate(self, rpm, rotDir = config.ROT_CW):
+    def rotate(self, rpm, rotDir = config.DC_ROT_CW):
         # Make sure rpm is positive
         rpm = abs(rpm)
 
