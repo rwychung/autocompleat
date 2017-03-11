@@ -13,6 +13,9 @@ class Tape(object):
         self.cam = camMotor
         self.limitSwitch = limitSwitch
         self.homeDir = homeDir
+        self.curPos = 0
+        self.curTapePos = 0
+        self.disable()
 
     def move(self, mm, speed):
         steps = self._mm2StepsCarr(mm) * self.homeDir
@@ -20,6 +23,7 @@ class Tape(object):
         self.carriage.step(steps, rpm)
 
     def extend(self, mm, speed):
+        self.curTapePos += mm
         steps = self._mm2StepsTape(mm)
         rpm = self._angSpeed2RpmTape(speed)
         self.tape.step(steps, rpm)
@@ -33,9 +37,6 @@ class Tape(object):
         rot = mm/config.TAPE_CAM_LENGTH * config.SERVO_MAX_ROT
         self.cam.setRot(rot)
 
-    def home(self, mm, speed):
-        pass
-
     def enable(self):
         self.carriage.enable()
         self.tape.enable()
@@ -43,6 +44,19 @@ class Tape(object):
     def disable(self):
         self.carriage.disable()
         self.tape.disable()
+
+    def home(self):
+        carrDir = config.STEPPER_ROT_CW
+        if self.homeDir == config.HOME_DIR_NEG:
+            carrDir = config.STEPPER_ROT_CCW
+
+        # Start homing
+        self.carriage.run(carrDir, config.CARR_HOME_RPM)
+        self.limitSwitch.waitUntilClose()
+
+        self.disable()
+        self.enable()
+        self.curPos = 0
 
     def _mm2StepsCarr(self, mm):
         return config.CARR_STEPS_PER_MM * mm

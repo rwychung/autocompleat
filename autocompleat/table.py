@@ -10,10 +10,10 @@ class Table(object):
 
     def __init__(self, leadScrewMotor, limitSwitch, homeDir):
         self.leadScrew = leadScrewMotor
-        self.leadScrew.disable()
         self.limitSwitch = limitSwitch
         self.homeDir = homeDir
         self.curPos = 0
+        self.disable()
 
     def lift(self, mm, speed):
         self.curPos += mm
@@ -42,13 +42,7 @@ class Table(object):
 
         # Start homing
         self.leadScrew.run(leadScrewDir, config.TABLE_HOME_RPM)
-
-        # Tight polling
-        while self.limitSwitch.isOpen():
-            print("Switch is OPEN")
-            pass
-
-        print("Switch is CLEAR")
+        self.limitSwitch.waitUntilClose()
 
         self.disable()
         self.enable()

@@ -11,3 +11,10 @@ class LimitSwitch(object):
 
     def isClose(self):
         return self.mcp.input(self.limitPin) == config.LIMIT_SWITCH_CLOSE
+
+    def waitUntilClose(self):
+        # TODO: Debouncing
+        while self.limitSwitch.isOpen():
+            pass
+        print("Switch is now closed")
+
