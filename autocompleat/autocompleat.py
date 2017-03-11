@@ -178,6 +178,7 @@ def startEventLoop():
                 4 - enable carraige motor
                 5 - disable carriage motor
                 6 - stop rod
+                7 - home carriage
                 q - quit""" % (dist, dist))
 
                 if a == '0':
@@ -194,6 +195,8 @@ def startEventLoop():
                     rodXObj.disable()
                 elif a == '6':
                     rodXObj.stop()
+                elif a == '7':
+                    rodXObj.home()
                 elif a == 'q':
                     break
                 else:
@@ -209,6 +212,7 @@ def startEventLoop():
                 4 - enable carraige motor
                 5 - disable carriage motor
                 6 - stop rod
+                7 - home carriage
                 q - quit""" % (dist, dist))
 
                 if a == '0':
@@ -225,6 +229,8 @@ def startEventLoop():
                     rodYObj.disable()
                 elif a == '6':
                     rodYObj.stop()
+                elif a == '7':
+                    rodYObj.home()
                 elif a == 'q':
                     break
                 else:
@@ -242,6 +248,7 @@ def startEventLoop():
                 5 - set cam max position
                 6 - enable carraige and tape motor
                 7 - disable carriage and tape motor
+                8 - home carriage
                 q - quit""" % (dist, dist, extDist, extDist))
 
                 if a == '0':
@@ -260,6 +267,8 @@ def startEventLoop():
                     tapeXLeftObj.enable()
                 elif a == '7':
                     tapeXLeftObj.disable()
+                elif a == '8':
+                    tapeXLeftObj.home()
                 elif a == 'q':
                     break
                 else:
@@ -277,6 +286,7 @@ def startEventLoop():
                 5 - set cam max position
                 6 - enable carraige and tape motor
                 7 - disable carriage and tape motor
+                8 - home carriage
                 q - quit""" % (dist, dist, extDist, extDist))
 
                 if a == '0':
@@ -295,6 +305,8 @@ def startEventLoop():
                     tapeXRightObj.enable()
                 elif a == '7':
                     tapeXRightObj.disable()
+                elif a == '8':
+                    tapeXRightObj.home()
                 elif a == 'q':
                     break
                 else:
@@ -312,6 +324,7 @@ def startEventLoop():
                 5 - set cam max position
                 6 - enable carraige and tape motor
                 7 - disable carriage and tape motor
+                8 - home carriage
                 q - quit""" % (dist, dist, extDist, extDist))
 
                 if a == '0':
@@ -330,6 +343,8 @@ def startEventLoop():
                     tapeYObj.enable()
                 elif a == '7':
                     tapeYObj.disable()
+                elif a == '8':
+                    tapeYObj.home()
                 elif a == 'q':
                     break
                 else:
