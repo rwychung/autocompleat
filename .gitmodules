@@ -4,3 +4,6 @@
 [submodule "lib/Adafruit_Python_GPIO"]
 	path = lib/Adafruit_Python_GPIO
 	url = https://github.com/adafruit/Adafruit_Python_GPIO.git
+[submodule "lib/click"]
+	path = lib/click
+	url = https://github.com/pallets/click.git
