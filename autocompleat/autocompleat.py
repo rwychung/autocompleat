@@ -88,18 +88,12 @@ def startEventLoop():
                                        pins.TAPECARR_Y_AXIS_STEP_PWM_CHANNEL,
                                        config.CARR_STEPS_PER_REV)
 
-    tapeXLeftMotor = motor.StepperMotor(mcpList[pins.TAPE_MCP],
-                                        pwm,
-                                        pins.TAPE_X_AXIS_LEFT_DIR_PIN,
-                                        pins.TAPE_X_AXIS_LEFT_RST_PIN,
-                                        pins.TAPE_X_AXIS_LEFT_STEP_PWM_CHANNEL,
-                                        config.TAPE_STEPS_PER_REV)
-    tapeXRightMotor = motor.StepperMotor(mcpList[pins.TAPE_MCP],
-                                         pwm,
-                                         pins.TAPE_X_AXIS_RIGHT_DIR_PIN,
-                                         pins.TAPE_X_AXIS_RIGHT_RST_PIN,
-                                         pins.TAPE_X_AXIS_RIGHT_STEP_PWM_CHANNEL,
-                                         config.TAPE_STEPS_PER_REV)
+    tapeXMotors = motor.StepperMotor(mcpList[pins.TAPE_MCP],
+                                     pwm,
+                                     pins.TAPE_X_AXIS_DIR_PIN,
+                                     pins.TAPE_X_AXIS_RST_PIN,
+                                     pins.TAPE_X_AXIS_STEP_PWM_CHANNEL,
+                                     config.TAPE_STEPS_PER_REV)
     tapeYMotor = motor.StepperMotor(mcpList[pins.TAPE_MCP],
                                     pwm,
                                     pins.TAPE_Y_AXIS_DIR_PIN,
@@ -107,20 +101,17 @@ def startEventLoop():
                                     pins.TAPE_Y_AXIS_STEP_PWM_CHANNEL,
                                     config.TAPE_STEPS_PER_REV)
 
-    tapeCamXLeftMotor = motor.ServoMotor(pwm,
-                                           pins.TAPECAM_X_AXIS_LEFT_STEP_PWM_CHANNEL)
-    tapeCamXRightMotor = motor.ServoMotor(pwm,
-                                            pins.TAPECAM_X_AXIS_RIGHT_STEP_PWM_CHANNEL)
-    tapeCamYMotor = motor.ServoMotor(pwm,
-                                       pins.TAPECAM_Y_AXIS_STEP_PWM_CHANNEL)
+    tapeCamXLeftMotor = motor.ServoMotor(pwm, pins.TAPECAM_X_AXIS_LEFT_STEP_PWM_CHANNEL)
+    tapeCamXRightMotor = motor.ServoMotor(pwm, pins.TAPECAM_X_AXIS_RIGHT_STEP_PWM_CHANNEL)
+    tapeCamYMotor = motor.ServoMotor(pwm, pins.TAPECAM_Y_AXIS_STEP_PWM_CHANNEL)
 
     # Create component objects
     tableObj = table.Table(leadScrewMotor, tableLimit, config.TABLE_HOME_DIR)
     rodXObj = rod.Rod(rodCarrXMotor, rodXMotor, rodCarrXLimit, config.ROD_X_AXIS_HOME_DIR)
     rodYObj = rod.Rod(rodCarrYMotor, rodYMotor, rodCarrYLimit,  config.ROD_Y_AXIS_HOME_DIR)
-    tapeXLeftObj = tape.Tape(tapeCarrXLeftMotor, tapeXLeftMotor, tapeCamXLeftMotor,
+    tapeXLeftObj = tape.Tape(tapeCarrXLeftMotor, tapeXMotors, tapeCamXLeftMotor,
                              tapeCarrXLeftLimit, config.TAPE_X_AXIS_LEFT_HOME_DIR)
-    tapeXRightObj = tape.Tape(tapeCarrXRightMotor, tapeXRightMotor, tapeCamXRightMotor,
+    tapeXRightObj = tape.Tape(tapeCarrXRightMotor, tapeXMotors, tapeCamXRightMotor,
                              tapeCarrXRightLimit, config.TAPE_X_AXIS_RIGHT_HOME_DIR)
     tapeYObj = tape.Tape(tapeCarrYMotor, tapeYMotor, tapeCamYMotor,
                          tapeCarrYLimit, config.TAPE_Y_AXIS_HOME_DIR)
