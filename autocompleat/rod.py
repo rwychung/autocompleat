@@ -20,7 +20,9 @@ class Rod(object):
         self.disable()
 
     def move(self, mm, speed):
-        """speed = mm/s"""
+        if self.state == config.DISABLED:
+            return
+
         if self.minPos <= (self.curPos + mm) <= self.maxPos:
             self.curPos += mm
             steps = self._mm2steps(mm) * self.homeDir
@@ -41,6 +43,9 @@ class Rod(object):
         self.rod.rotate(0)
 
     def home(self):
+        if self.state == config.DISABLED:
+            return
+
         carrDir = config.STEPPER_ROT_CW
         if self.homeDir == config.HOME_DIR_NEG:
             carrDir = config.STEPPER_ROT_CCW

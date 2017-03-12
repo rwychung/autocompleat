@@ -169,7 +169,7 @@ def tableLower(mm, speed):
 def tableLift(mm, speed):
     tableObj.lift(mm, speed)
     global clearScreen
-    clearScreen = True
+    clearScreen = False
 
 @cliTable.command('mvabs')
 @click.argument('mm', type=click.FloatRange(min=0))

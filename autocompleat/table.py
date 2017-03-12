@@ -19,6 +19,9 @@ class Table(object):
         self.disable()
 
     def lift(self, mm, speed):
+        if self.state == config.DISABLED:
+            return
+
         if self.minPos <= (self.curPos + mm) <= self.maxPos:
             self.curPos += mm
             steps = self._mm2Steps(mm)
@@ -44,6 +47,9 @@ class Table(object):
         self.state = config.DISABLED
 
     def home(self):
+        if self.state == config.DISABLED:
+            return
+
         leadScrewDir = config.STEPPER_ROT_CW
         if self.homeDir == config.HOME_DIR_NEG:
             leadScrewDir = config.STEPPER_ROT_CCW

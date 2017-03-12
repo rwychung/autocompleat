@@ -27,6 +27,9 @@ class Tape(object):
         self.disable()
 
     def move(self, mm, speed):
+        if self.state == config.DISABLED:
+            return
+
         if self.minPos <= (self.curPos + mm) <= self.maxPos:
             self.curPos += mm
             steps = self._mm2StepsCarr(mm) * self.homeDir
@@ -38,6 +41,9 @@ class Tape(object):
         self.move(mm, speed)
 
     def extend(self, mm, speed):
+        if self.state == config.DISABLED:
+            return
+
         if self.minTapePos <= (self.curTapePos + mm) <= self.maxTapePos:
             self.curTapePos += mm
             steps = self._mm2StepsTape(mm)
@@ -84,6 +90,9 @@ class Tape(object):
         self.state = config.DISABLED
 
     def home(self):
+        if self.state == config.DISABLED:
+            return
+
         carrDir = config.STEPPER_ROT_CW
         if self.homeDir == config.HOME_DIR_NEG:
             carrDir = config.STEPPER_ROT_CCW
