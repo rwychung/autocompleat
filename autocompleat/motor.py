@@ -29,7 +29,7 @@ class StepperMotor(object):
         # Make sure rpm is not negative
         rpm = abs(rpm)
         # Saturate rpm
-        rpm = min(rpm, CONFIG.STEPPER_MAX_RPM)
+        rpm = min(rpm, config.STEPPER_MAX_RPM)
 
         # Set PWM freq
         pwmFreq = self._rpm2Freq(rpm)
@@ -49,7 +49,7 @@ class StepperMotor(object):
         # Make sure rpm is not negative
         rpm = abs(rpm)
         # Saturate rpm
-        rpm = min(rpm, CONFIG.STEPPER_MAX_RPM)
+        rpm = min(rpm, config.STEPPER_MAX_RPM)
 
         # Set PWM freq
         pwmFreq = self._rpm2Freq(rpm)
