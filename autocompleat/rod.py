@@ -23,6 +23,10 @@ class Rod(object):
         rpm = self._angSpeed2Rpm(speed)
         self.carriage.step(steps, rpm)
 
+    def setPosition(self, mm, speed):
+        mm = mm - self.curPos
+        self.move(mm, speed)
+
     def getPosition(self):
         return self.curPos
 

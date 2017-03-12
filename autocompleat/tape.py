@@ -15,6 +15,7 @@ class Tape(object):
         self.homeDir = homeDir
         self.curPos = 0
         self.curTapePos = 0
+        self.curTapeHeight = 0
         self.disable()
 
     def move(self, mm, speed):
@@ -22,11 +23,9 @@ class Tape(object):
         rpm = self._angSpeed2RpmCarr(speed)
         self.carriage.step(steps, rpm)
 
-    def getPosition(self):
-        return self.curPos
-
-    def getTapePosition(self):
-        return self.curTapePos
+    def setPosition(self, mm, speed):
+        mm = mm - self.curPos
+        self.move(mm, speed)
 
     def extend(self, mm, speed):
         self.curTapePos += mm
@@ -37,11 +36,25 @@ class Tape(object):
     def retract(self, mm, speed):
         self.extend(-mm, speed)
 
+    def setExtrusion(self, mm, speed):
+        mm = mm - curTapePos
+        self.extend(mm, speed)
+
     def setCamHeight(self, mm):
         # TODO: do some math to conver mm to pos
         mm = min(mm, config.TAPE_CAM_LENGTH)
         rot = mm/config.TAPE_CAM_LENGTH * config.SERVO_MAX_ROT
         self.cam.setRot(rot)
+
+    def getPosition(self):
+        return self.curPos
+
+    def getTapePosition(self):
+        return self.curTapePos
+
+    def getTapeHeight(self):
+        # TODO: get proper height
+        return self.curTapeHeight
 
     def enable(self):
         self.carriage.enable()

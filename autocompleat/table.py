@@ -19,7 +19,6 @@ class Table(object):
         self.curPos += mm
         steps = self._mm2Steps(mm)
         rpm = self._speed2Rpm(speed)
-        print("Table rpm: %f" % rpm)
         self.leadScrew.step(steps, rpm)
 
     def lower(self, mm, speed):
