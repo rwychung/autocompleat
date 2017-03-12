@@ -26,6 +26,11 @@ class StepperMotor(object):
         # Set direction
         self.mcp.output(self.dirPin, stepDir)
 
+        # Make sure rpm is not negative
+        rpm = abs(rpm)
+        # Saturate rpm
+        rpm = min(rpm, CONFIG.STEPPER_MAX_RPM)
+
         # Set PWM freq
         pwmFreq = self._rpm2Freq(rpm)
         print("Rpm: %f" % rpm)
@@ -40,6 +45,11 @@ class StepperMotor(object):
 
         # Set direction
         self.mcp.output(self.dirPin, stepDir)
+
+        # Make sure rpm is not negative
+        rpm = abs(rpm)
+        # Saturate rpm
+        rpm = min(rpm, CONFIG.STEPPER_MAX_RPM)
 
         # Set PWM freq
         pwmFreq = self._rpm2Freq(rpm)
@@ -102,6 +112,8 @@ class DCMotor(object):
     def rotate(self, rpm, rotDir = config.DC_ROT_CW):
         # Make sure rpm is positive
         rpm = abs(rpm)
+        # Saturage rpm
+        rpm = min(rpm, config.DC_MAX_RPM)
 
         # Set direction
         self.mcp.output(self.dirPin, rotDir)
