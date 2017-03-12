@@ -169,7 +169,7 @@ def tableLower(mm, speed):
 def tableLift(mm, speed):
     tableObj.lift(mm, speed)
     global clearScreen
-    clearScreen = False
+    clearScreen = True
 
 @cliTable.command('mvabs')
 @click.argument('mm', type=click.FloatRange(min=0))
@@ -534,5 +534,10 @@ if __name__ == "__main__":
     try:
         cli()
     finally:
-        pass
+        tableObj.disable()
+        rodXObj.disable()
+        rodYObj.disable()
+        tapeXLeftObj.disable()
+        tapeXRightObj.disable()
+        tapeYObj.disable()
         #RPi.GPIO.cleanup()

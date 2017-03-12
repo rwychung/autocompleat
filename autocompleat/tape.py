@@ -60,7 +60,7 @@ class Tape(object):
     def liftTape(self, mm):
         if self.minCamPos <= (self.curCamPos + mm) <= self.maxCamPos:
             self.curCamPos += mm
-            rot = self._mm2Rotation(mm)
+            rot = self._mm2Rotation(self.curCamPos)
             self.cam.setRot(rot)
 
     def lowerTape(self, mm):
@@ -78,6 +78,9 @@ class Tape(object):
 
     def getTapeHeight(self):
         return self.curCamPos
+
+    def setTapePosition(self, mm):
+        self.curTapePos = mm
 
     def enable(self):
         self.carriage.enable()
