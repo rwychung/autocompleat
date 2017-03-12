@@ -127,19 +127,25 @@ tapeXLeftObj = tape.Tape(tapeCarrXLeftMotor, tapeXMotors, tapeCamXLeftMotor,
                          config.TAPECARR_X_LEFT_MIN_POS,
                          config.TAPECARR_X_LEFT_MAX_POS,
                          config.TAPE_MIN_POS,
-                         config.TAPE_MAX_POS)
+                         config.TAPE_MAX_POS,
+                         config.TAPE_CAM_MIN_POS,
+                         config.TAPE_CAM_MAX_POS)
 tapeXRightObj = tape.Tape(tapeCarrXRightMotor, tapeXMotors, tapeCamXRightMotor,
                          tapeCarrXRightLimit, config.TAPE_X_AXIS_RIGHT_HOME_DIR,
                          config.TAPECARR_X_RIGHT_MIN_POS,
                          config.TAPECARR_X_RIGHT_MAX_POS,
                          config.TAPE_MIN_POS,
-                         config.TAPE_MAX_POS)
+                         config.TAPE_MAX_POS,
+                         config.TAPE_CAM_MIN_POS,
+                         config.TAPE_CAM_MAX_POS)
 tapeYObj = tape.Tape(tapeCarrYMotor, tapeYMotor, tapeCamYMotor,
                      tapeCarrYLimit, config.TAPE_Y_AXIS_HOME_DIR,
                          config.TAPECARR_Y_MIN_POS,
                          config.TAPECARR_Y_MAX_POS,
                          config.TAPE_MIN_POS,
-                         config.TAPE_MAX_POS)
+                         config.TAPE_MAX_POS,
+                         config.TAPE_CAM_MIN_POS,
+                         config.TAPE_CAM_MAX_POS)
 
 # Enable table motors
 tableObj.enable()
@@ -184,6 +190,7 @@ def tableMvabs(mm, speed):
 @cliTable.command('home')
 def tableHome():
     tableObj.home()
+    click.echo("Homing...")
     global clearScreen
     clearScreen = True
 
@@ -255,9 +262,8 @@ def rodStop(rod):
     if rod == 'y':
         rodObj = rodYObj
     rodObj.stop()
-    click.echo("stopping rod")
     global clearScreen
-    clearScreen = False
+    clearScreen = True
 
 @cliRod.command('home')
 @click.argument('rod', type=click.Choice(cliRodCommandChoice))
@@ -266,8 +272,9 @@ def rodHome(rod):
     if rod == 'y':
         rodObj = rodYObj
     rodObj.home()
+    click.echo("Homing...")
     global clearScreen
-    clearScreen = False
+    clearScreen = True
 
 @cliRod.command('enable')
 @click.argument('rod', type=click.Choice(cliRodCommandChoice))
@@ -377,8 +384,9 @@ def tapeLift(tape, mm):
         tapeObj = tapeXRightObj
     elif tape == 'y':
         tapeObj = tapeYObj
-    # TODO: implement this and the associated functions in class Tape
-    click.echo('Currently not available')
+    tapeObj.liftTape(mm)
+    global clearScreen
+    clearScreen = True
 
 @cliTape.command('lower')
 @click.argument('tape', type=click.Choice(cliTapeCommandChoice))
@@ -389,8 +397,9 @@ def tapeLower(tape, mm):
         tapeObj = tapeXRightObj
     elif tape == 'y':
         tapeObj = tapeYObj
-    # TODO: implement this and the associated functions in class Tape
-    click.echo('Currently not available')
+    tapeObj.lowerTape(mm)
+    global clearScreen
+    clearScreen = True
 
 @cliTape.command('liftabs')
 @click.argument('tape', type=click.Choice(cliTapeCommandChoice))
@@ -401,7 +410,7 @@ def tapeLiftAbs(tape, mm):
         tapeObj = tapeXRightObj
     elif tape == 'y':
         tapeObj = tapeYObj
-    tapeObj.setCamHeight(mm)
+    tapeObj.setTapeHeight(mm)
     global clearScreen
     clearScreen = True
 
@@ -414,6 +423,7 @@ def tapeHome(tape):
     elif tape == 'y':
         tapeObj = tapeYObj
     tapeObj.home()
+    click.echo("Homing...")
     global clearScreen
     clearScreen = True
 
@@ -530,7 +540,7 @@ def cli():
 
 if __name__ == "__main__":
     try:
-        print("Welcome to the autocompleat CLI")
         cli()
     finally:
-        RPi.GPIO.cleanup()
+        pass
+        #RPi.GPIO.cleanup()

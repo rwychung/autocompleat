@@ -7,7 +7,8 @@ import motor
 
 class Tape(object):
 
-    def __init__(self, carriageMotor, tapeMotor, camMotor, limitSwitch, homeDir, minPos, maxPos, minTapePos, maxTapePos):
+    def __init__(self, carriageMotor, tapeMotor, camMotor, limitSwitch, homeDir,
+                 minPos, maxPos, minTapePos, maxTapePos, minCamPos, maxCamPos):
         self.carriage = carriageMotor
         self.tape = tapeMotor
         self.cam = camMotor
@@ -17,9 +18,11 @@ class Tape(object):
         self.maxPos = maxPos
         self.minTapePos = minTapePos
         self.maxTapePos = maxTapePos
+        self.minCamPos = minCamPos
+        self.maxCamPos = maxCamPos
         self.curPos = 0
         self.curTapePos = 0
-        self.curTapeHeight = 0
+        self.curCamPos = 0
         self.state = config.DISABLED
         self.disable()
 
@@ -48,11 +51,18 @@ class Tape(object):
         mm = mm - self.curTapePos
         self.extend(mm, speed)
 
-    def setCamHeight(self, mm):
-        # TODO: do some math to conver mm to pos
-        mm = min(mm, config.TAPE_CAM_LENGTH)
-        rot = mm/config.TAPE_CAM_LENGTH * config.SERVO_MAX_ROT
-        self.cam.setRot(rot)
+    def liftTape(self, mm):
+        if self.minCamPos <= (self.curCamPos + mm) <= self.maxCamPos:
+            self.curCamPos += mm
+            rot = self._mm2Rotation(mm)
+            self.cam.setRot(rot)
+
+    def lowerTape(self, mm):
+        self.liftTape(-mm)
+
+    def setTapeHeight(self, mm):
+        mm = mm - self.curCamPos
+        self.liftTape(mm)
 
     def getPosition(self):
         return self.curPos
@@ -61,8 +71,7 @@ class Tape(object):
         return self.curTapePos
 
     def getTapeHeight(self):
-        # TODO: get proper height
-        return self.curTapeHeight
+        return self.curCamPos
 
     def enable(self):
         self.carriage.enable()
@@ -98,3 +107,6 @@ class Tape(object):
 
     def _linSpeed2RpmTape(self, linSpeed):
         return self._mm2StepsTape(linSpeed) * 60 / config.TAPE_STEPS_PER_REV
+
+    def _mm2Rotation(self, mm):
+        return mm / self.maxCamPos * config.SERVO_MAX_ROT

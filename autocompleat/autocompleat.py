@@ -127,19 +127,25 @@ tapeXLeftObj = tape.Tape(tapeCarrXLeftMotor, tapeXMotors, tapeCamXLeftMotor,
                          config.TAPECARR_X_LEFT_MIN_POS,
                          config.TAPECARR_X_LEFT_MAX_POS,
                          config.TAPE_MIN_POS,
-                         config.TAPE_MAX_POS)
+                         config.TAPE_MAX_POS,
+                         config.TAPE_CAM_MIN_POS,
+                         config.TAPE_CAM_MAX_POS)
 tapeXRightObj = tape.Tape(tapeCarrXRightMotor, tapeXMotors, tapeCamXRightMotor,
                          tapeCarrXRightLimit, config.TAPE_X_AXIS_RIGHT_HOME_DIR,
                          config.TAPECARR_X_RIGHT_MIN_POS,
                          config.TAPECARR_X_RIGHT_MAX_POS,
                          config.TAPE_MIN_POS,
-                         config.TAPE_MAX_POS)
+                         config.TAPE_MAX_POS,
+                         config.TAPE_CAM_MIN_POS,
+                         config.TAPE_CAM_MAX_POS)
 tapeYObj = tape.Tape(tapeCarrYMotor, tapeYMotor, tapeCamYMotor,
                      tapeCarrYLimit, config.TAPE_Y_AXIS_HOME_DIR,
                          config.TAPECARR_Y_MIN_POS,
                          config.TAPECARR_Y_MAX_POS,
                          config.TAPE_MIN_POS,
-                         config.TAPE_MAX_POS)
+                         config.TAPE_MAX_POS,
+                         config.TAPE_CAM_MIN_POS,
+                         config.TAPE_CAM_MAX_POS)
 
 # Enable table motors
 tableObj.enable()
