@@ -8,21 +8,24 @@ import motor
 
 class Rod(object):
 
-    def __init__(self, carriageMotor, rodMotor, limitSwitch, homeDir):
+    def __init__(self, carriageMotor, rodMotor, limitSwitch, homeDir, minPos, maxPos):
         self.carriage = carriageMotor
         self.rod = rodMotor
         self.limitSwitch = limitSwitch
         self.homeDir = homeDir
+        self.minPos = minPos
+        self.maxPos = maxPos
         self.curPos = 0
         self.state = config.ENABLED
         self.disable()
 
     def move(self, mm, speed):
         """speed = mm/s"""
-        self.curPos += mm
-        steps = self._mm2steps(mm) * self.homeDir
-        rpm = self._angSpeed2Rpm(speed)
-        self.carriage.step(steps, rpm)
+        if self.minPos <= (self.curPos + mm) <= self.maxPos:
+            self.curPos += mm
+            steps = self._mm2steps(mm) * self.homeDir
+            rpm = self._linSpeed2Rpm(speed)
+            self.carriage.step(steps, rpm)
 
     def setPosition(self, mm, speed):
         mm = mm - self.curPos
@@ -62,5 +65,5 @@ class Rod(object):
     def _mm2steps(self, mm):
         return config.CARR_STEPS_PER_MM  * mm
 
-    def _angSpeed2Rpm(self, angSpeed):
-        return angSpeed * 60 / config.CARR_STEPS_PER_REV
+    def _linSpeed2Rpm(self, linSpeed):
+        return self._mm2steps(linSpeed) * 60 / config.CARR_STEPS_PER_REV

@@ -7,12 +7,16 @@ import motor
 
 class Tape(object):
 
-    def __init__(self, carriageMotor, tapeMotor, camMotor, limitSwitch, homeDir):
+    def __init__(self, carriageMotor, tapeMotor, camMotor, limitSwitch, homeDir, minPos, maxPos, minTapePos, maxTapePos):
         self.carriage = carriageMotor
         self.tape = tapeMotor
         self.cam = camMotor
         self.limitSwitch = limitSwitch
         self.homeDir = homeDir
+        self.minPos = minPos
+        self.maxPos = maxPos
+        self.minTapePos = minTapePos
+        self.maxTapePos = maxTapePos
         self.curPos = 0
         self.curTapePos = 0
         self.curTapeHeight = 0
@@ -20,20 +24,22 @@ class Tape(object):
         self.disable()
 
     def move(self, mm, speed):
-        self.curPos += mm
-        steps = self._mm2StepsCarr(mm) * self.homeDir
-        rpm = self._angSpeed2RpmCarr(speed)
-        self.carriage.step(steps, rpm)
+        if self.minPos <= (self.curPos + mm) <= self.maxPos:
+            self.curPos += mm
+            steps = self._mm2StepsCarr(mm) * self.homeDir
+            rpm = self._linSpeed2RpmCarr(speed)
+            self.carriage.step(steps, rpm)
 
     def setPosition(self, mm, speed):
         mm = mm - self.curPos
         self.move(mm, speed)
 
     def extend(self, mm, speed):
-        self.curTapePos += mm
-        steps = self._mm2StepsTape(mm)
-        rpm = self._angSpeed2RpmTape(speed)
-        self.tape.step(steps, rpm)
+        if self.minTapePos <= (self.curTapePos + mm) <= self.maxTapePos:
+            self.curTapePos += mm
+            steps = self._mm2StepsTape(mm)
+            rpm = self._linSpeed2RpmTape(speed)
+            self.tape.step(steps, rpm)
 
     def retract(self, mm, speed):
         self.extend(-mm, speed)
@@ -84,11 +90,11 @@ class Tape(object):
     def _mm2StepsCarr(self, mm):
         return config.CARR_STEPS_PER_MM * mm
 
-    def _angSpeed2RpmCarr(self, angSpeed):
-        return angSpeed * 60 / config.CARR_STEPS_PER_REV
+    def _linSpeed2RpmCarr(self, linSpeed):
+        return self._mm2StepsCarr(linSpeed) * 60 / config.CARR_STEPS_PER_REV
 
     def _mm2StepsTape(self, mm):
         return config.TAPE_STEPS_PER_MM * mm
 
-    def _angSpeed2RpmTape(self, angSpeed):
-        return angSpeed * 60 / config.TAPE_STEPS_PER_REV
+    def _linSpeed2RpmTape(self, linSpeed):
+        return self._mm2StepsTape(linSpeed) * 60 / config.TAPE_STEPS_PER_REV

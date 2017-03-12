@@ -8,19 +8,22 @@ import motor
 
 class Table(object):
 
-    def __init__(self, leadScrewMotor, limitSwitch, homeDir):
+    def __init__(self, leadScrewMotor, limitSwitch, homeDir, minPos, maxPos):
         self.leadScrew = leadScrewMotor
         self.limitSwitch = limitSwitch
         self.homeDir = homeDir
+        self.minPos = minPos
+        self.maxPos = maxPos
         self.curPos = 0
         self.state = config.DISABLED
         self.disable()
 
     def lift(self, mm, speed):
-        self.curPos += mm
-        steps = self._mm2Steps(mm)
-        rpm = self._speed2Rpm(speed)
-        self.leadScrew.step(steps, rpm)
+        if self.minPos <= (self.curPos + mm) <= self.maxPos:
+            self.curPos += mm
+            steps = self._mm2Steps(mm)
+            rpm = self._speed2Rpm(speed)
+            self.leadScrew.step(steps, rpm)
 
     def lower(self, mm, speed):
         self.lift(-mm, speed)
