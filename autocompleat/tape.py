@@ -16,6 +16,7 @@ class Tape(object):
         self.curPos = 0
         self.curTapePos = 0
         self.curTapeHeight = 0
+        self.state = config.DISABLED
         self.disable()
 
     def move(self, mm, speed):
@@ -59,10 +60,12 @@ class Tape(object):
     def enable(self):
         self.carriage.enable()
         self.tape.enable()
+        self.state = config.ENABLED
 
     def disable(self):
         self.carriage.disable()
         self.tape.disable()
+        self.state = config.DISABLED
 
     def home(self):
         carrDir = config.STEPPER_ROT_CW

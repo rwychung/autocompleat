@@ -14,6 +14,7 @@ class Rod(object):
         self.limitSwitch = limitSwitch
         self.homeDir = homeDir
         self.curPos = 0
+        self.state = config.ENABLED
         self.disable()
 
     def move(self, mm, speed):
@@ -36,9 +37,6 @@ class Rod(object):
     def stop(self):
         self.rod.rotate(0)
 
-    def enable(self):
-        self.carriage.enable()
-
     def home(self):
         carrDir = config.STEPPER_ROT_CW
         if self.homeDir == config.HOME_DIR_NEG:
@@ -52,9 +50,14 @@ class Rod(object):
         self.enable()
         self.curPos = 0
 
+    def enable(self):
+        self.carriage.enable()
+        self.state = config.ENABLED
+
     def disable(self):
         self.carriage.disable()
         self.rod.stop()
+        self.state = config.DISABLED
 
     def _mm2steps(self, mm):
         return config.CARR_STEPS_PER_MM  * mm

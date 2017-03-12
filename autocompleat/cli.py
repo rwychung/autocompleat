@@ -142,7 +142,7 @@ def cliTable():
     pass
 
 @cliTable.command('lower')
-@click.argument('mm', type=click.FLOAT)
+@click.argument('mm', type=click.FloatRange(min=0))
 @click.argument('speed', type=click.FloatRange(min=0))
 def tableLower(mm, speed):
     tableObj.lower(mm, speed)
@@ -150,7 +150,7 @@ def tableLower(mm, speed):
     clearScreen = True
 
 @cliTable.command('lift')
-@click.argument('mm', type=click.FLOAT)
+@click.argument('mm', type=click.FloatRange(min=0))
 @click.argument('speed', type=click.FloatRange(min=0))
 def tableLift(mm, speed):
     tableObj.lift(mm, speed)
@@ -179,7 +179,7 @@ def tableEnable():
 
 @cliTable.command('disable')
 def talbleDisable():
-    tableOjb.disable()
+    tableObj.disable()
     global clearScreen
     clearScreen = True
 
@@ -198,7 +198,7 @@ cliRodCommandChoice = ['x', 'y']
 @click.argument('mm', type=click.FLOAT)
 @click.argument('speed', type=click.FloatRange(min=0))
 def rodMvrel(rod, mm, speed):
-    rodOjb = rodXObj
+    rodObj = rodXObj
     if rod == 'y':
         rodObj = rodYObj
     rodObj.move(mm, speed)
@@ -210,7 +210,7 @@ def rodMvrel(rod, mm, speed):
 @click.argument('mm', type=click.FloatRange(min=0))
 @click.argument('speed', type=click.FloatRange(min=0))
 def rodMvabs(rod, mm, speed):
-    rodOjb = rodXObj
+    rodObj = rodXObj
     if rod == 'y':
         rodObj = rodYObj
     rodObj.setPosition(mm, speed)
@@ -222,7 +222,7 @@ def rodMvabs(rod, mm, speed):
 @click.argument('speed', type=click.FloatRange(min=0))
 @click.argument('rotDir', type=click.Choice(['cw', 'ccw']))
 def rodRotate(rod, speed, rotDir):
-    rodOjb = rodXObj
+    rodObj = rodXObj
     if rod == 'y':
         rodObj = rodYObj
     rodRotDir = config.DC_ROT_CW
@@ -230,32 +230,32 @@ def rodRotate(rod, speed, rotDir):
         rodRotDir = config.DC_ROT_CCW
     rodObj.rotate(speed, rodRotDir)
     global clearScreen
-    clearScreen = True
+    clearScreen = False
 
 @cliRod.command('stop')
 @click.argument('rod', type=click.Choice(cliRodCommandChoice))
 def rodStop(rod):
-    rodOjb = rodXObj
+    rodObj = rodXObj
     if rod == 'y':
         rodObj = rodYObj
     rodObj.stop()
     global clearScreen
-    clearScreen = True
+    clearScreen = False
 
 @cliRod.command('home')
 @click.argument('rod', type=click.Choice(cliRodCommandChoice))
 def rodHome(rod):
-    rodOjb = rodXObj
+    rodObj = rodXObj
     if rod == 'y':
         rodObj = rodYObj
     rodObj.home()
     global clearScreen
-    clearScreen = True
+    clearScreen = False
 
 @cliRod.command('enable')
 @click.argument('rod', type=click.Choice(cliRodCommandChoice))
 def rodEnable(rod):
-    rodOjb = rodXObj
+    rodObj = rodXObj
     if rod == 'y':
         rodObj = rodYObj
     rodObj.enable()
@@ -265,7 +265,7 @@ def rodEnable(rod):
 @cliRod.command('disable')
 @click.argument('rod', type=click.Choice(cliRodCommandChoice))
 def rodDisable(rod):
-    rodOjb = rodXObj
+    rodObj = rodXObj
     if rod == 'y':
         rodObj = rodYObj
     rodObj.disable()
@@ -283,7 +283,7 @@ cliTapeCommandChoice = ['xl', 'xr', 'y']
 
 @cliTape.command('mvrel')
 @click.argument('tape', type=click.Choice(cliTapeCommandChoice))
-@click.argument('mm', type=click.FloatRange(min=0))
+@click.argument('mm', type=click.FLOAT)
 @click.argument('speed', type=click.FloatRange(min=0))
 def tapeMvrel(tape, mm, speed):
     tapeObj = tapeXLeftObj
@@ -441,30 +441,43 @@ def printInformation():
     tapeYPos = tapeYObj.getTapePosition()
     tapeYHeight = tapeYObj.getTapeHeight()
 
-    click.echo(click.style('autocompleat CLI', fg='green'))
-    click.echo(click.style('Table Height:                %f mm' % tablePos))
-    click.echo(click.style('Rod X Carriage Position:     %f mm' % rodXPos))
-    click.echo(click.style('Rod Y Carriage Position:     %f mm' % rodYPos))
+    tableColor = 'red' if tableObj.state == config.DISABLED else 'green'
+    rodXColor = 'red' if rodXObj.state == config.DISABLED else 'green'
+    rodYColor = 'red' if rodYObj.state == config.DISABLED else 'green'
+    tapeXLeftColor = 'red' if tapeXLeftObj.state == config.DISABLED else 'green'
+    tapeXRightColor = 'red' if tapeXRightObj.state == config.DISABLED else 'green'
+    tapeYColor = 'red' if tapeYObj.state == config.DISABLED else 'green'
+
+    click.echo(click.style('autocompleat CLI', 'blue'))
+    click.echo(click.style('----------------', 'blue'))
+
+    click.echo(click.style('Table Height:                %f mm' % tablePos, tableColor))
     click.echo('')
 
-    click.echo(click.style('Tape XL Carraige Position:   %f mm' % tapeCarrXLeftPos))
-    click.echo(click.style('Tape XL Position:            %f mm' % tapeXLeftPos))
-    click.echo(click.style('Tape XL Height:              %f mm' % tapeXLeftHeight))
+    click.echo(click.style('Rod X Carriage Position:     %f mm' % rodXPos, rodXColor))
+    click.echo(click.style('Rod Y Carriage Position:     %f mm' % rodYPos, rodYColor))
     click.echo('')
 
-    click.echo(click.style('Tape XR Carraige Position:   %f mm' % tapeCarrXRightPos))
-    click.echo(click.style('Tape XR Position:            %f mm' % tapeXRightPos))
-    click.echo(click.style('Tape XR Height:              %f mm' % tapeXRightHeight))
+    click.echo(click.style('Tape XL Carraige Position:   %f mm' % tapeCarrXLeftPos, tapeXLeftColor))
+    click.echo(click.style('Tape XL Position:            %f mm' % tapeXLeftPos, tapeXLeftColor))
+    click.echo(click.style('Tape XL Height:              %f mm' % tapeXLeftHeight, tapeXLeftColor))
     click.echo('')
 
-    click.echo(click.style('Tape Y Carriage Position:    %f mm' % tapeCarrYPos))
-    click.echo(click.style('Tape Y Position:             %f mm' % tapeYPos))
-    click.echo(click.style('Tape Y Height:               %f mm' % tapeYHeight))
+    click.echo(click.style('Tape XR Carraige Position:   %f mm' % tapeCarrXRightPos, tapeXRightColor))
+    click.echo(click.style('Tape XR Position:            %f mm' % tapeXRightPos, tapeXRightColor))
+    click.echo(click.style('Tape XR Height:              %f mm' % tapeXRightHeight, tapeXRightColor))
+    click.echo('')
 
-    click.echo("""Commands:
+    click.echo(click.style('Tape Y Carriage Position:    %f mm' % tapeCarrYPos, tapeYColor))
+    click.echo(click.style('Tape Y Position:             %f mm' % tapeYPos, tapeYColor))
+    click.echo(click.style('Tape Y Height:               %f mm' % tapeYHeight, tapeYColor))
+    click.echo('')
+
+    click.echo(click.style("""Commands:
           table
           rod
-          tape""")
+          tape
+          exit""", 'cyan'))
 
 def cli():
     global clearScreen
@@ -486,7 +499,7 @@ def cli():
                 cliRod(opt, prog_name='rod')
             elif cmd == 'tape':
                 cliTape(opt, prog_name='tape')
-            elif cmd == 'q':
+            elif cmd == 'exit':
                 break
             else:
                 click.echo("Invalid command.")

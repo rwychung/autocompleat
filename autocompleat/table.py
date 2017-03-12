@@ -13,6 +13,7 @@ class Table(object):
         self.limitSwitch = limitSwitch
         self.homeDir = homeDir
         self.curPos = 0
+        self.state = config.DISABLED
         self.disable()
 
     def lift(self, mm, speed):
@@ -33,9 +34,11 @@ class Table(object):
 
     def enable(self):
         self.leadScrew.enable()
+        self.state = config.ENABLED
 
     def disable(self):
         self.leadScrew.disable()
+        self.state = config.DISABLED
 
     def home(self):
         leadScrewDir = config.STEPPER_ROT_CW

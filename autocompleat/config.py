@@ -12,6 +12,10 @@ TAPE_CAM_LENGTH = 30
 PWM_PULSE_LENGTH = 4095
 DEFAULT_PWM_FREQ = 60
 
+# Component enable or disable constants
+ENABLED = 1
+DISABLED = 0
+
 # Motor configuration constants
 STEPPER_ENABLE = RPi.GPIO.HIGH
 STEPPER_DISABLE = RPi.GPIO.LOW
