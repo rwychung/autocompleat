@@ -147,14 +147,6 @@ tapeYObj = tape.Tape(tapeCarrYMotor, tapeYMotor, tapeCamYMotor,
                          config.TAPE_CAM_MIN_POS,
                          config.TAPE_CAM_MAX_POS)
 
-# Enable table motors
-tableObj.enable()
-rodXObj.enable()
-rodYObj.enable()
-tapeXLeftObj.enable()
-tapeXRightObj.enable()
-tapeYObj.enable()
-
 def eventLoop():
     while True:
         pass
