@@ -20,6 +20,7 @@ class Tape(object):
         self.disable()
 
     def move(self, mm, speed):
+        self.curPos += mm
         steps = self._mm2StepsCarr(mm) * self.homeDir
         rpm = self._angSpeed2RpmCarr(speed)
         self.carriage.step(steps, rpm)
@@ -38,7 +39,7 @@ class Tape(object):
         self.extend(-mm, speed)
 
     def setExtrusion(self, mm, speed):
-        mm = mm - curTapePos
+        mm = mm - self.curTapePos
         self.extend(mm, speed)
 
     def setCamHeight(self, mm):
@@ -73,7 +74,7 @@ class Tape(object):
             carrDir = config.STEPPER_ROT_CCW
 
         # Start homing
-        self.carriage.run(carrDir, config.CARR_HOME_RPM)
+        self.carriage.run(carrDir, config.TAPE_HOME_RPM)
         self.limitSwitch.waitUntilClose()
 
         self.disable()

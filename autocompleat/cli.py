@@ -16,7 +16,6 @@ import rod
 import table
 import tape
 
-print("setup everything")
 # Setup RPi
 RPi.GPIO.setmode(RPi.GPIO.BOARD)
 
@@ -220,17 +219,17 @@ def rodMvabs(rod, mm, speed):
 @cliRod.command('rotate')
 @click.argument('rod', type=click.Choice(cliRodCommandChoice))
 @click.argument('speed', type=click.FloatRange(min=0))
-@click.argument('rotDir', type=click.Choice(['cw', 'ccw']))
-def rodRotate(rod, speed, rotDir):
+@click.argument('rotdir', type=click.Choice(['cw', 'ccw']))
+def rodRotate(rod, speed, rotdir):
     rodObj = rodXObj
     if rod == 'y':
         rodObj = rodYObj
     rodRotDir = config.DC_ROT_CW
-    if rotDir == 'ccw':
+    if rotdir == 'ccw':
         rodRotDir = config.DC_ROT_CCW
     rodObj.rotate(speed, rodRotDir)
     global clearScreen
-    clearScreen = False
+    clearScreen = True
 
 @cliRod.command('stop')
 @click.argument('rod', type=click.Choice(cliRodCommandChoice))
@@ -239,6 +238,7 @@ def rodStop(rod):
     if rod == 'y':
         rodObj = rodYObj
     rodObj.stop()
+    click.echo("stopping rod")
     global clearScreen
     clearScreen = False
 

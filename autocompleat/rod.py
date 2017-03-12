@@ -43,7 +43,7 @@ class Rod(object):
             carrDir = config.STEPPER_ROT_CCW
 
         # Start homing
-        self.carriage.run(carrDir, config.CARR_HOME_RPM)
+        self.carriage.run(carrDir, config.ROD_HOME_RPM)
         self.limitSwitch.waitUntilClose()
 
         self.disable()
