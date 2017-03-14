@@ -72,10 +72,14 @@ class StepperMotor(object):
 
 class ServoMotor(object):
 
-    def __init__(self, pwm, pwmChannel, pwmFreq = config.SERVO_PWM_FREQ,
-                                        transTime = config.SERVO_TRANS_TIME):
+    def __init__(self, pwm, pwmChannel,
+                 minPulseLength, maxPulseLength,
+                 pwmFreq = config.SERVO_PWM_FREQ,
+                 transTime = config.SERVO_TRANS_TIME):
         self.pwm = pwm
         self.pwmChannel = pwmChannel
+        self.minPulseLength = minPulseLength
+        self.maxPulseLength = maxPulseLength
         self.pwmFreq = pwmFreq
         self.servoTransTime = transTime
         self.setRot(config.SERVO_MIN_ROT)
@@ -91,7 +95,9 @@ class ServoMotor(object):
         print("Servo pwm freq: %f" % self.pwmFreq)
         print("Servo rot: %f degrees" % rot)
 
-        pulses = int(rot / config.SERVO_MAX_ROT * (config.SERVO_MAX_PULSE - config.SERVO_MIN_PULSE) + config.SERVO_MIN_PULSE)
+        pulses = int(rot / config.SERVO_MAX_ROT * (self.maxPulseLength - self.minPulseLength)
+                     + self.minPulseLength)
+
         print("Servo pulse: %f" % pulses)
 
         self.pwm.set_pwm_freq(self.pwmFreq)

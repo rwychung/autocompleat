@@ -109,9 +109,15 @@ tapeYMotor = motor.StepperMotor(mcpList[pins.TAPE_MCP],
                                 pins.TAPE_Y_AXIS_STEP_PWM_CHANNEL,
                                 config.TAPE_STEPS_PER_REV)
 
-tapeCamXLeftMotor = motor.ServoMotor(pwm, pins.TAPECAM_X_AXIS_LEFT_STEP_PWM_CHANNEL)
-tapeCamXRightMotor = motor.ServoMotor(pwm, pins.TAPECAM_X_AXIS_RIGHT_STEP_PWM_CHANNEL)
-tapeCamYMotor = motor.ServoMotor(pwm, pins.TAPECAM_Y_AXIS_STEP_PWM_CHANNEL)
+tapeCamXLeftMotor = motor.ServoMotor(pwm, pins.TAPECAM_X_AXIS_LEFT_STEP_PWM_CHANNEL,
+                                     config.TAPE_X_LEFT_SERVO_MIN_PULSE,
+                                     config.TAPE_X_LEFT_SERVO_MAX_PULSE)
+tapeCamXRightMotor = motor.ServoMotor(pwm, pins.TAPECAM_X_AXIS_RIGHT_STEP_PWM_CHANNEL,
+                                     config.TAPE_X_RIGHT_SERVO_MIN_PULSE,
+                                     config.TAPE_X_RIGHT_SERVO_MAX_PULSE)
+tapeCamYMotor = motor.ServoMotor(pwm, pins.TAPECAM_Y_AXIS_STEP_PWM_CHANNEL,
+                                 config.TAPE_Y_SERVO_MIN_PULSE,
+                                 config.TAPE_Y_SERVO_MAX_PULSE)
 
 # Create component objects
 tableObj = table.Table(leadScrewMotor, tableLimit, config.TABLE_HOME_DIR,
@@ -124,6 +130,7 @@ rodYObj = rod.Rod(rodCarrYMotor, rodYMotor, rodCarrYLimit,
                   config.RODCARR_Y_MIN_POS, config.RODCARR_Y_MAX_POS)
 tapeXLeftObj = tape.Tape(tapeCarrXLeftMotor, tapeXMotors, tapeCamXLeftMotor,
                          tapeCarrXLeftLimit, config.TAPE_X_AXIS_LEFT_HOME_DIR,
+                         config.TAPE_HOME_DIR,
                          config.TAPECARR_X_LEFT_MIN_POS,
                          config.TAPECARR_X_LEFT_MAX_POS,
                          config.TAPE_MIN_POS,
@@ -132,6 +139,7 @@ tapeXLeftObj = tape.Tape(tapeCarrXLeftMotor, tapeXMotors, tapeCamXLeftMotor,
                          config.TAPE_CAM_MAX_POS)
 tapeXRightObj = tape.Tape(tapeCarrXRightMotor, tapeXMotors, tapeCamXRightMotor,
                          tapeCarrXRightLimit, config.TAPE_X_AXIS_RIGHT_HOME_DIR,
+                         config.TAPE_HOME_DIR,
                          config.TAPECARR_X_RIGHT_MIN_POS,
                          config.TAPECARR_X_RIGHT_MAX_POS,
                          config.TAPE_MIN_POS,
@@ -140,6 +148,7 @@ tapeXRightObj = tape.Tape(tapeCarrXRightMotor, tapeXMotors, tapeCamXRightMotor,
                          config.TAPE_CAM_MAX_POS)
 tapeYObj = tape.Tape(tapeCarrYMotor, tapeYMotor, tapeCamYMotor,
                      tapeCarrYLimit, config.TAPE_Y_AXIS_HOME_DIR,
+                         config.TAPE_HOME_DIR,
                          config.TAPECARR_Y_MIN_POS,
                          config.TAPECARR_Y_MAX_POS,
                          config.TAPE_MIN_POS,

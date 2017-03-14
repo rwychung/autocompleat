@@ -8,12 +8,13 @@ import motor
 class Tape(object):
 
     def __init__(self, carriageMotor, tapeMotor, camMotor, limitSwitch, homeDir,
-                 minPos, maxPos, minTapePos, maxTapePos, minCamPos, maxCamPos):
+                 tapeHomeDir, minPos, maxPos, minTapePos, maxTapePos, minCamPos, maxCamPos):
         self.carriage = carriageMotor
         self.tape = tapeMotor
         self.cam = camMotor
         self.limitSwitch = limitSwitch
         self.homeDir = homeDir
+        self.tapeHomeDir = tapeHomeDir
         self.minPos = minPos
         self.maxPos = maxPos
         self.minTapePos = minTapePos
@@ -46,7 +47,7 @@ class Tape(object):
 
         if self.minTapePos <= (self.curTapePos + mm) <= self.maxTapePos:
             self.curTapePos += mm
-            steps = self._mm2StepsTape(mm)
+            steps = self._mm2StepsTape(mm) * self.tapeHomeDir
             rpm = self._linSpeed2RpmTape(speed)
             self.tape.step(steps, rpm)
 
