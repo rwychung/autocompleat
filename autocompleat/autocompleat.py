@@ -16,6 +16,8 @@ import rod
 import table
 import tape
 
+import pdb
+
 # Setup RPi
 RPi.GPIO.setmode(RPi.GPIO.BOARD)
 
@@ -109,9 +111,9 @@ tapeYMotor = motor.StepperMotor(mcpList[pins.TAPE_MCP],
                                 pins.TAPE_Y_AXIS_STEP_PWM_CHANNEL,
                                 config.TAPE_STEPS_PER_REV)
 
-tapeCamXLeftMotor = motor.ServoMotor(pwm, pins.TAPECAM_X_AXIS_LEFT_STEP_PWM_CHANNEL)
-tapeCamXRightMotor = motor.ServoMotor(pwm, pins.TAPECAM_X_AXIS_RIGHT_STEP_PWM_CHANNEL)
-tapeCamYMotor = motor.ServoMotor(pwm, pins.TAPECAM_Y_AXIS_STEP_PWM_CHANNEL)
+#tapeCamXLeftMotor = motor.ServoMotor(pwm, pins.TAPECAM_X_AXIS_LEFT_STEP_PWM_CHANNEL)
+#tapeCamXRightMotor = motor.ServoMotor(pwm, pins.TAPECAM_X_AXIS_RIGHT_STEP_PWM_CHANNEL)
+#tapeCamYMotor = motor.ServoMotor(pwm, pins.TAPECAM_Y_AXIS_STEP_PWM_CHANNEL)
 
 # Create component objects
 tableObj = table.Table(leadScrewMotor, tableLimit, config.TABLE_HOME_DIR,
@@ -122,37 +124,140 @@ rodXObj = rod.Rod(rodCarrXMotor, rodXMotor, rodCarrXLimit,
 rodYObj = rod.Rod(rodCarrYMotor, rodYMotor, rodCarrYLimit,
                   config.ROD_Y_AXIS_HOME_DIR,
                   config.RODCARR_Y_MIN_POS, config.RODCARR_Y_MAX_POS)
-tapeXLeftObj = tape.Tape(tapeCarrXLeftMotor, tapeXMotors, tapeCamXLeftMotor,
-                         tapeCarrXLeftLimit, config.TAPE_X_AXIS_LEFT_HOME_DIR,
-                         config.TAPECARR_X_LEFT_MIN_POS,
-                         config.TAPECARR_X_LEFT_MAX_POS,
-                         config.TAPE_MIN_POS,
-                         config.TAPE_MAX_POS,
-                         config.TAPE_CAM_MIN_POS,
-                         config.TAPE_CAM_MAX_POS)
-tapeXRightObj = tape.Tape(tapeCarrXRightMotor, tapeXMotors, tapeCamXRightMotor,
-                         tapeCarrXRightLimit, config.TAPE_X_AXIS_RIGHT_HOME_DIR,
-                         config.TAPECARR_X_RIGHT_MIN_POS,
-                         config.TAPECARR_X_RIGHT_MAX_POS,
-                         config.TAPE_MIN_POS,
-                         config.TAPE_MAX_POS,
-                         config.TAPE_CAM_MIN_POS,
-                         config.TAPE_CAM_MAX_POS)
-tapeYObj = tape.Tape(tapeCarrYMotor, tapeYMotor, tapeCamYMotor,
-                     tapeCarrYLimit, config.TAPE_Y_AXIS_HOME_DIR,
-                         config.TAPECARR_Y_MIN_POS,
-                         config.TAPECARR_Y_MAX_POS,
-                         config.TAPE_MIN_POS,
-                         config.TAPE_MAX_POS,
-                         config.TAPE_CAM_MIN_POS,
-                         config.TAPE_CAM_MAX_POS)
+#tapeXLeftObj = tape.Tape(tapeCarrXLeftMotor, tapeXMotors, tapeCamXLeftMotor,
+                         #tapeCarrXLeftLimit, config.TAPE_X_AXIS_LEFT_HOME_DIR,
+                         #config.TAPECARR_X_LEFT_MIN_POS,
+                         #config.TAPECARR_X_LEFT_MAX_POS,
+                         #config.TAPE_MIN_POS,
+                         #config.TAPE_MAX_POS,
+                         #config.TAPE_CAM_MIN_POS,
+                         #config.TAPE_CAM_MAX_POS)
+#tapeXRightObj = tape.Tape(tapeCarrXRightMotor, tapeXMotors, tapeCamXRightMotor,
+                         #tapeCarrXRightLimit, config.TAPE_X_AXIS_RIGHT_HOME_DIR,
+                         #config.TAPECARR_X_RIGHT_MIN_POS,
+                         #config.TAPECARR_X_RIGHT_MAX_POS,
+                         #config.TAPE_MIN_POS,
+                         #config.TAPE_MAX_POS,
+                         #config.TAPE_CAM_MIN_POS,
+                         #config.TAPE_CAM_MAX_POS)
+#tapeYObj = tape.Tape(tapeCarrYMotor, tapeYMotor, tapeCamYMotor,
+                     #tapeCarrYLimit, config.TAPE_Y_AXIS_HOME_DIR,
+                         #config.TAPECARR_Y_MIN_POS,
+                         #config.TAPECARR_Y_MAX_POS,
+                         #config.TAPE_MIN_POS,
+                         #config.TAPE_MAX_POS,
+                         #config.TAPE_CAM_MIN_POS,
+                         #config.TAPE_CAM_MAX_POS)
+
+def homeAll():
+    for obj in [tableObj, rodXObj, rodYObj]:# tapeXLeftObj, tapeXRightObj, tapeYObj]:
+        obj.enable()
+        obj.home()
+        obj.disable()
+        
+def stopAllRotates():
+    for obj in [rodXObj, rodYObj]:
+        obj.rotate(0, config.DC_ROT_CW)
 
 def eventLoop():
     while True:
-        pass
+
+        raw_input('enter to home')
+        
+        # initialize
+        
+        print "Homing"
+        homeAll()
+        
+        raw_input('enter to adjust rod to edge of table')
+        
+        # move rod to inside edge of table
+        rodXObj.enable()
+        rodXObj.move(40, 100)
+        rodXObj.disable()
+        
+        raw_input('enter to lift table up')
+        
+        tableObj.enable()
+        tableObj.lift(40, 30)
+        tableObj.disable()
+        
+        raw_input('enter to move tape to fold 1')
+        # tape carriage move
+        
+        raw_input('enter to extend tape')
+        # tape extend
+        
+        raw_input('enter to spin rod')
+        rodXObj.rotate(100, config.DC_ROT_CW)
+        
+        raw_input('enter to scoop shirt')
+        rodXObj.enable()
+        rodXObj.move(220, 20)
+        rodXObj.disable()
+        
+        raw_input('enter to rotate rod slow ccw')
+        rodXObj.rotate(50, config.DC_ROT_CCW)
+                
+        raw_input('enter to lower table')
+        # lower tape
+        tableObj.enable()
+        tableObj.lower(40, 30)
+        tableObj.disable()
+        
+        raw_input('enter to rotate faster')
+        rodXObj.rotate(100, config.DC_ROT_CCW)
+        
+        raw_input('enter to bring sleeve over')
+        rodXObj.enable()
+        rodXObj.move(250, 20)
+        rodXObj.disable()
+        
+        raw_input('enter to move rod for fold 2')
+        rodXObj.enable()
+        rodXObj.setPosition(rodXObj.maxPos, 100)
+        rodXObj.disable()
+        
+        raw_input('enter to adjust table for fold 2')
+        tableObj.enable()
+        tableObj.lift(35, 30)
+        tableObj.disable()
+        
+        raw_input('enter to rotate rod')
+        rodXObj.rotate(100, config.DC_ROT_CCW)
+        
+        raw_input('enter to scoop sleeve')
+        rodXObj.enable()
+        rodXObj.move(-200, 20)
+        rodXObj.disable()
+        
+        raw_input('enter to slow spin rod')
+        rodXObj.rotate(50, config.DC_ROT_CW)
+        
+        raw_input('enter to drop table')
+        tableObj.enable()
+        tableObj.home()
+        tableObj.disable()
+        
+        raw_input('enter to spin rod faster')
+        rodXObj.rotate(100, config.DC_ROT_CW)
+        
+        raw_input('enter to bring sleeve over')
+        rodXObj.enable()
+        rodXObj.move(-250, 20)
+        rodXObj.disable()
+        
+        raw_input('enter to end')
+        break
+        
+        
 
 if __name__ == "__main__":
     try:
         eventLoop()
     finally:
+        print "Cleaning GPIOs"
+        
+        stopAllRotates()
+        homeAll()
         RPi.GPIO.cleanup()

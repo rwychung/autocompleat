@@ -24,7 +24,7 @@ class Table(object):
 
         if self.minPos <= (self.curPos + mm) <= self.maxPos:
             self.curPos += mm
-            steps = self._mm2Steps(mm)
+            steps = self._mm2Steps(mm) * config.TABLE_HOME_DIR
             rpm = self._speed2Rpm(speed)
             self.leadScrew.step(steps, rpm)
 
@@ -49,14 +49,18 @@ class Table(object):
     def home(self):
         if self.state == config.DISABLED:
             return
+            
+        if self.limitSwitch.isClose():
+            pass
+            
+        else:
+            leadScrewDir = config.STEPPER_ROT_CW
+            if self.homeDir == config.HOME_DIR_POS:
+                leadScrewDir = config.STEPPER_ROT_CCW
 
-        leadScrewDir = config.STEPPER_ROT_CW
-        if self.homeDir == config.HOME_DIR_NEG:
-            leadScrewDir = config.STEPPER_ROT_CCW
-
-        # Start homing
-        self.leadScrew.run(leadScrewDir, config.TABLE_HOME_RPM)
-        self.limitSwitch.waitUntilClose()
+            # Start homing
+            self.leadScrew.run(leadScrewDir, config.TABLE_HOME_RPM)
+            self.limitSwitch.waitUntilClose()
 
         self.disable()
         self.enable()

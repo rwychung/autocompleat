@@ -59,7 +59,7 @@ class StepperMotor(object):
         self.pwm.set_pwm(self.pwmChannel, 0, config.PWM_PULSE_LENGTH//2)
 
         # Wait until stepping is done
-        sleepTime = abs(steps)/pwmFreq
+        sleepTime = abs(steps)/pwmFreq * config.STEPPER_PWM_TIME_MODIFIER
         print("Steps: %f" % steps)
         print("Sleep for %f seconds" % sleepTime)
         time.sleep(sleepTime)

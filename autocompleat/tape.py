@@ -52,7 +52,16 @@ class Tape(object):
             self.tape.step(steps, rpm)
 
     def retract(self, mm, speed):
-        self.extend(-mm, speed)
+        mm = -mm
+
+        if self.state == config.DISABLED:
+            return
+
+        if (self.minTapePos) <= (self.curTapePos + mm) <= self.maxTapePos:
+            self.curTapePos += mm
+            steps = self._mm2StepsTape(mm - config.TAPE_RET_EXTRA_MM) * self.tapeHomeDir
+            rpm = self._linSpeed2RpmTape(speed)
+            self.tape.step(steps, rpm)
 
     def setExtrusion(self, mm, speed):
         mm = mm - self.curTapePos
@@ -96,14 +105,18 @@ class Tape(object):
     def home(self):
         if self.state == config.DISABLED:
             return
+            
+        if self.limitSwitch.isClose():
+            pass
+            
+        else:
+            carrDir = config.STEPPER_ROT_CW
+            if self.homeDir == config.HOME_DIR_POS:
+                carrDir = config.STEPPER_ROT_CCW
 
-        carrDir = config.STEPPER_ROT_CW
-        if self.homeDir == config.HOME_DIR_NEG:
-            carrDir = config.STEPPER_ROT_CCW
-
-        # Start homing
-        self.carriage.run(carrDir, config.TAPE_HOME_RPM)
-        self.limitSwitch.waitUntilClose()
+            # Start homing
+            self.carriage.run(carrDir, config.TAPE_HOME_RPM)
+            self.limitSwitch.waitUntilClose()
 
         self.disable()
         self.enable()

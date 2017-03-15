@@ -45,14 +45,18 @@ class Rod(object):
     def home(self):
         if self.state == config.DISABLED:
             return
+            
+        if self.limitSwitch.isClose():
+            pass
+            
+        else:
+            carrDir = config.STEPPER_ROT_CW
+            if self.homeDir == config.HOME_DIR_POS:
+                carrDir = config.STEPPER_ROT_CCW
 
-        carrDir = config.STEPPER_ROT_CW
-        if self.homeDir == config.HOME_DIR_NEG:
-            carrDir = config.STEPPER_ROT_CCW
-
-        # Start homing
-        self.carriage.run(carrDir, config.ROD_HOME_RPM)
-        self.limitSwitch.waitUntilClose()
+            # Start homing
+            self.carriage.run(carrDir, config.ROD_HOME_RPM)
+            self.limitSwitch.waitUntilClose()
 
         self.disable()
         self.enable()
