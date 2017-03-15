@@ -66,7 +66,8 @@ MCP23017_PINS = [
                  ]
 
 # Adafruit PWM hat address
-PWM_HAT_ADDR = 0x40
+STEPPER_PWM_HAT_ADDR = 0x40
+SERVO_PWM_HAT_ADDR= 0x41
 
 ###################
 #   PI Interrupt  #

@@ -22,7 +22,8 @@ RPi.GPIO.setmode(RPi.GPIO.BOARD)
 # Create MCP and PWM hat objects
 busnum = 1
 mcpList = [Adafruit_GPIO.MCP230xx.MCP23017(address = addr, busnum = busnum) for addr in pins.MCP23017_ADDR]
-pwm = Adafruit_PCA9685.PCA9685(pins.PWM_HAT_ADDR)
+stepperPWM = Adafruit_PCA9685.PCA9685(pins.STEPPER_PWM_HAT_ADDR)
+servoPWM = Adafruit_PCA9685.PCA9685(pins.SERVO_PWM_HAT_ADDR)
 
 # Initialize pins of MCP
 for i, mcp in enumerate(mcpList):
@@ -49,73 +50,73 @@ tapeCarrYLimit = limit.LimitSwitch(mcpList[pins.LIMIT_MCP],
 
 # Create motor objects
 leadScrewMotor = motor.StepperMotor(mcpList[pins.TABLE_MCP],
-                                    pwm,
+                                    stepperPWM,
                                     pins.TABLE_DIR_PIN,
                                     pins.TABLE_RST_PIN,
                                     pins.TABLE_STEP_PWM_CHANNEL,
                                     config.TABLE_STEPS_PER_REV)
 
 rodCarrXMotor = motor.StepperMotor(mcpList[pins.RODCARR_MCP],
-                                   pwm,
+                                   stepperPWM,
                                    pins.RODCARR_X_AXIS_DIR_PIN,
                                    pins.RODCARR_X_AXIS_RST_PIN,
                                    pins.RODCARR_X_AXIS_STEP_PWM_CHANNEL,
                                    config.CARR_STEPS_PER_REV)
 rodCarrYMotor = motor.StepperMotor(mcpList[pins.RODCARR_MCP],
-                                   pwm,
+                                   stepperPWM,
                                    pins.RODCARR_Y_AXIS_DIR_PIN,
                                    pins.RODCARR_Y_AXIS_RST_PIN,
                                    pins.RODCARR_Y_AXIS_STEP_PWM_CHANNEL,
                                    config.CARR_STEPS_PER_REV)
 
 rodXMotor = motor.DCMotor(mcpList[pins.ROD_MCP],
-                          pwm,
+                          stepperPWM,
                           pins.ROD_X_AXIS_DIR_PIN,
                           pins.ROD_X_AXIS_STEP_PWM_CHANNEL)
 rodYMotor = motor.DCMotor(mcpList[pins.ROD_MCP],
-                          pwm,
+                          stepperPWM,
                           pins.ROD_Y_AXIS_DIR_PIN,
                           pins.ROD_Y_AXIS_STEP_PWM_CHANNEL)
 
 tapeCarrXLeftMotor = motor.StepperMotor(mcpList[pins.TAPECARR_MCP],
-                                        pwm,
+                                        stepperPWM,
                                         pins.TAPECARR_X_AXIS_LEFT_DIR_PIN,
                                         pins.TAPECARR_X_AXIS_LEFT_RST_PIN,
                                         pins.TAPECARR_X_AXIS_LEFT_STEP_PWM_CHANNEL,
                                         config.CARR_STEPS_PER_REV)
 tapeCarrXRightMotor = motor.StepperMotor(mcpList[pins.TAPECARR_MCP],
-                                        pwm,
+                                        stepperPWM,
                                         pins.TAPECARR_X_AXIS_RIGHT_DIR_PIN,
                                         pins.TAPECARR_X_AXIS_RIGHT_RST_PIN,
                                         pins.TAPECARR_X_AXIS_RIGHT_STEP_PWM_CHANNEL,
                                         config.CARR_STEPS_PER_REV)
 tapeCarrYMotor = motor.StepperMotor(mcpList[pins.TAPECARR_MCP],
-                                   pwm,
+                                   stepperPWM,
                                    pins.TAPECARR_Y_AXIS_DIR_PIN,
                                    pins.TAPECARR_Y_AXIS_RST_PIN,
                                    pins.TAPECARR_Y_AXIS_STEP_PWM_CHANNEL,
                                    config.CARR_STEPS_PER_REV)
 
 tapeXMotors = motor.StepperMotor(mcpList[pins.TAPE_MCP],
-                                 pwm,
+                                 stepperPWM,
                                  pins.TAPE_X_AXIS_DIR_PIN,
                                  pins.TAPE_X_AXIS_RST_PIN,
                                  pins.TAPE_X_AXIS_STEP_PWM_CHANNEL,
                                  config.TAPE_STEPS_PER_REV)
 tapeYMotor = motor.StepperMotor(mcpList[pins.TAPE_MCP],
-                                pwm,
+                                stepperPWM,
                                 pins.TAPE_Y_AXIS_DIR_PIN,
                                 pins.TAPE_Y_AXIS_RST_PIN,
                                 pins.TAPE_Y_AXIS_STEP_PWM_CHANNEL,
                                 config.TAPE_STEPS_PER_REV)
 
-tapeCamXLeftMotor = motor.ServoMotor(pwm, pins.TAPECAM_X_AXIS_LEFT_STEP_PWM_CHANNEL,
+tapeCamXLeftMotor = motor.ServoMotor(servoPWM, pins.TAPECAM_X_AXIS_LEFT_STEP_PWM_CHANNEL,
                                      config.TAPE_X_LEFT_SERVO_MIN_PULSE,
                                      config.TAPE_X_LEFT_SERVO_MAX_PULSE)
-tapeCamXRightMotor = motor.ServoMotor(pwm, pins.TAPECAM_X_AXIS_RIGHT_STEP_PWM_CHANNEL,
+tapeCamXRightMotor = motor.ServoMotor(servoPWM, pins.TAPECAM_X_AXIS_RIGHT_STEP_PWM_CHANNEL,
                                      config.TAPE_X_RIGHT_SERVO_MIN_PULSE,
                                      config.TAPE_X_RIGHT_SERVO_MAX_PULSE)
-tapeCamYMotor = motor.ServoMotor(pwm, pins.TAPECAM_Y_AXIS_STEP_PWM_CHANNEL,
+tapeCamYMotor = motor.ServoMotor(servoPWM, pins.TAPECAM_Y_AXIS_STEP_PWM_CHANNEL,
                                  config.TAPE_Y_SERVO_MIN_PULSE,
                                  config.TAPE_Y_SERVO_MAX_PULSE)
 
