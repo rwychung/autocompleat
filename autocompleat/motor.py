@@ -74,14 +74,12 @@ class ServoMotor(object):
 
     def __init__(self, pwm, pwmChannel,
                  minPulseLength, maxPulseLength,
-                 pwmFreq = config.SERVO_PWM_FREQ,
-                 transTime = config.SERVO_TRANS_TIME):
+                 pwmFreq = config.SERVO_PWM_FREQ)
         self.pwm = pwm
         self.pwmChannel = pwmChannel
         self.minPulseLength = minPulseLength
         self.maxPulseLength = maxPulseLength
         self.pwmFreq = pwmFreq
-        self.servoTransTime = transTime
         self.setRot(config.SERVO_MIN_ROT)
 
     def setRot(self, rot):
