@@ -34,6 +34,18 @@ for i, mcp in enumerate(mcpList):
         if pins.MCP23017_PINS[i][j] == RPi.GPIO.IN:
             mcp.pullup(j, True)
 
+# set default distances of shirt (x-axis)
+left_edge_to_tape_home = 310
+right_edge_to_tape_home = 475
+x_rod_home_to_start_pos = 45
+edge_to_x_start_pos = 10
+
+# set default distances of shirt (y-axis)
+
+top_to_y_start_pos = 10
+y_rod_home_to_start_pos = 40
+y_tape_home_to_edge = 70
+
 # Create button object
 startButton = button.PushButton(mcpList[pins.PUSH_BUTTON_MCP], pins.PUSH_BUTTON_PIN)
 
@@ -172,11 +184,14 @@ def disableAll():
     for obj in [tableObj, rodXObj, rodYObj, tapeXLeftObj, tapeXRightObj, tapeYObj]:
         obj.disable()
 
+    for obj in [tapeXLeftObj, tapeXRightObj, tapeYObj]:
+        obj.disableTape()
+
 def stopAllRotates():
     for obj in [rodXObj, rodYObj]:
         obj.rotate(0, config.DC_ROT_CW)
         
-def firstTwoFolds():
+def defaultFirstTwoFolds():
     raw_input('enter to adjust rod to edge of table')
 
     # move rod to inside edge of table
@@ -266,6 +281,7 @@ def firstTwoFolds():
     # tape carriage move
     tapeXRightObj.enable()
     tapeXRightObj.move(20, 100)
+    tapeXRightObj.disable()
 
     raw_input('enter to lift tape')
     tapeXRightObj.liftTape(35)
@@ -288,12 +304,12 @@ def firstTwoFolds():
     
     raw_input('enter to retract tape')
     # retract tape xr
-    tapeXRightObj.retract(690, 100)
+    tapeXRightObj.retract(720, 100)
     
     raw_input('enter to home everything before final fold')
     homeAll()
     
-def finalFold():
+def defaultFinalFold():
     print '===STARTING FINAL FOLD==='
     
     raw_input('enter to move rod to edge of table')
@@ -321,6 +337,20 @@ def finalFold():
     tableObj.enable()
     tableObj.lower(70, 30)
     tableObj.disable()
+
+    raw_input('enter to move tape')
+    tapeYObj.enable()
+    tapeYObj.move(450, 100)
+    tapeYObj.disable()
+
+    raw_input('enter to raise tape')
+    tapeYObj.liftTape(35)
+
+    raw_input('enter to extend tape')
+    tapeYObj.extend(700, 100)
+
+    raw_input('enter to lower tape')
+    tapeYObj.lowerTape(35)
     
     raw_input('enter to carry shirt')
     rodYObj.enable()
@@ -333,9 +363,197 @@ def finalFold():
     rodYObj.move(60, 30)
     rodYObj.rotate(0, config.DC_ROT_CW)
     
+    raw_input('enter to retract tape')
+    tapeYObj.retract(720, 100)
+
     raw_input('enter to home everything')
     homeAll()
 
+def firstTwoFolds(center_x, center_y, left_edge, right_edge):
+    left_crease = (center_x + left_edge) / float(2)
+    right_crease = (center_x + right_edge) / float(2)
+
+    left_scoop_pos = (left_edge + left_crease) / float(2)
+    right_scoop_pos = (right_edge + right_crease) / float(2)
+
+    raw_input('enter to adjust rod to edge of table')
+
+    # move rod to inside edge of table
+    rodXObj.enable()
+    rodXObj.move(x_rod_home_to_start_pos, 100)
+    rodXObj.disable()
+
+    raw_input('enter to lift table up')
+
+    tableObj.enable()
+    tableObj.lift(50, 30)
+    tableObj.disable()
+
+    raw_input('enter to spin rod')
+    rodXObj.rotate(100, config.DC_ROT_CW)
+
+    raw_input('enter to scoop shirt')
+    rodXObj.enable()
+    rodXObj.move(left_scoop_pos - edge_to_x_start_pos, 20)
+    rodXObj.disable()
+
+    raw_input('enter to rotate rod slow ccw')
+    rodXObj.rotate(50, config.DC_ROT_CCW)
+
+    raw_input('enter to lower table')
+    # lower tape
+    tableObj.enable()
+    tableObj.home()
+    tableObj.disable()
+    
+    raw_input('enter to move tape to fold 1')
+    # tape carriage move
+    tapeXLeftObj.enable()
+    tapeXLeftObj.move(left_edge_to_tape_home - left_crease, 100)
+
+    raw_input('enter to lift tape')
+    tapeXLeftObj.liftTape(35)
+    tapeXRightObj.liftTape(35)
+    
+    raw_input('enter to extend tape')
+    # tape extend
+    tapeXLeftObj.extend(700, 100)
+    
+    raw_input('enter to lower tape')
+    tapeXLeftObj.lowerTape(35)
+
+    raw_input('enter to rotate faster')
+    rodXObj.rotate(100, config.DC_ROT_CCW)
+
+    raw_input('enter to bring sleeve over')
+    rodXObj.enable()
+    rodXObj.move(right_scoop_pos - left_scoop_pos, 20)
+    rodXObj.disable()
+    
+    raw_input('enter to retract tape')
+    # retract tape xl
+    tapeXLeftObj.retract(700, 100)
+
+    raw_input('enter to move rod for fold 2')
+    rodXObj.enable()
+    rodXObj.setPosition(rodXObj.maxPos, 100)
+    rodXObj.disable()
+
+    raw_input('enter to adjust table for fold 2')
+    tableObj.enable()
+    tableObj.lift(45, 30)
+    tableObj.disable()
+
+    raw_input('enter to rotate rod')
+    rodXObj.rotate(100, config.DC_ROT_CCW)
+
+    raw_input('enter to scoop sleeve')
+    rodXObj.enable()
+    rodXObj.move(right_scoop_pos - rodXObj.maxPos, 20)
+    rodXObj.disable()
+
+    raw_input('enter to slow spin rod')
+    rodXObj.rotate(50, config.DC_ROT_CW)
+
+    raw_input('enter to drop table')
+    # lower tape too
+    tableObj.enable()
+    tableObj.home()
+    tableObj.disable()
+    
+    raw_input('enter to move tape to fold 2')
+    # tape carriage move
+    tapeXRightObj.enable()
+    tapeXRightObj.move(right_edge_to_tape_home - right_crease, 100)
+    tapeXRightObj.disable()
+
+    raw_input('enter to lift tape')
+    tapeXRightObj.liftTape(35)
+    tapeXLeftObj.liftTape(35)
+    
+    raw_input('enter to extend tape')
+    # tape extend
+    tapeXRightObj.extend(700, 100)
+    
+    raw_input('enter to lower tape')
+    tapeXRightObj.lowerTape(35)
+
+    raw_input('enter to spin rod faster')
+    rodXObj.rotate(100, config.DC_ROT_CW)
+
+    raw_input('enter to bring sleeve over')
+    rodXObj.enable()
+    rodXObj.move(left_scoop_pos - right_scoop_pos, 20)
+    rodXObj.disable()
+    
+    raw_input('enter to retract tape')
+    # retract tape xr
+    tapeXRightObj.retract(720, 100)
+    
+    raw_input('enter to home everything before final fold')
+    homeAll()
+
+def finalFold(center_y):
+    scoop_pos = 2.0/5.0 * center_y
+    change_dir_pos = 762 - (762 - center_y)/2
+    print '===STARTING FINAL FOLD==='
+    
+    raw_input('enter to move rod to edge of table')
+    rodYObj.enable()
+    rodYObj.move(y_rod_home_to_start_pos, 100)
+    rodYObj.disable()
+    
+    raw_input('enter to raise table')
+    tableObj.enable()
+    tableObj.lift(80, 30)
+    tableObj.disable()
+    
+    raw_input('enter to rotate rod')
+    rodYObj.rotate(100, config.DC_ROT_CCW)
+    
+    raw_input('enter to scoop')
+    rodYObj.enable()
+    rodYObj.move(scoop_pos - top_to_y_start_pos, 30)
+    rodYObj.disable()
+    
+    raw_input('enter to spin rod again')
+    rodYObj.rotate(100, config.DC_ROT_CCW)
+    
+    raw_input('enter to lower table')
+    tableObj.enable()
+    tableObj.lower(70, 30)
+    tableObj.disable()
+
+    raw_input('enter to move tape')
+    tapeYObj.enable()
+    tapeYObj.move(y_tape_home_to_edge + y_center, 100)
+    tapeYObj.disable()
+
+    raw_input('enter to raise tape')
+    tapeYObj.liftTape(35)
+
+    raw_input('enter to extend tape')
+    tapeYObj.extend(700, 100)
+
+    raw_input('enter to lower tape')
+    tapeYObj.lowerTape(35)
+    
+    raw_input('enter to carry shirt')
+    rodYObj.enable()
+    rodYObj.move(change_dir_pos - scoop_pos, 30)
+    
+    raw_input('enter to rotate other way')
+    rodYObj.rotate(100, config.DC_ROT_CW)
+    
+    raw_input('enter to fold shirt collar')
+    rodYObj.move(rodYObj.maxPos - change_dir_pos, 30)
+    rodYObj.rotate(0, config.DC_ROT_CW)
+
+    raw_input('enter to retract tape')
+    tapeYObj.retract(720, 100)
+    
+    raw_input('enter to home everything')
+    homeAll()
 
 def eventLoop():
     while True:
@@ -346,9 +564,9 @@ def eventLoop():
         print "Homing"
         homeAll()
 
-        firstTwoFolds()
+        defaultFirstTwoFolds()
         
-        finalFold()
+        defaultFinalFold()
 
         #while(True):
             #raw_input('enter to lift table and servo')
