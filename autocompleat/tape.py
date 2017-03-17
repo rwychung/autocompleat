@@ -99,8 +99,10 @@ class Tape(object):
 
     def disable(self):
         self.carriage.disable()
-        self.tape.disable()
         self.state = config.DISABLED
+        
+    def disableTape(self):
+        self.tape.disable()
 
     def home(self):
         if self.state == config.DISABLED:

@@ -74,7 +74,7 @@ class ServoMotor(object):
 
     def __init__(self, pwm, pwmChannel,
                  minPulseLength, maxPulseLength,
-                 pwmFreq = config.SERVO_PWM_FREQ)
+                 pwmFreq = config.SERVO_PWM_FREQ):
         self.pwm = pwm
         self.pwmChannel = pwmChannel
         self.minPulseLength = minPulseLength
@@ -100,11 +100,6 @@ class ServoMotor(object):
 
         self.pwm.set_pwm_freq(self.pwmFreq)
         self.pwm.set_pwm(self.pwmChannel, 0, pulses)
-
-        # TODO: Calculate time the servo needs to sleep for
-        # Currently sleeps for the maximum time needed to go from min to max position
-        print("Servo sleep for: %f second" % self.servoTransTime)
-        time.sleep(self.servoTransTime)
 
 class DCMotor(object):
 
