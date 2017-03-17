@@ -360,7 +360,7 @@ def defaultFinalFold():
     rodYObj.rotate(100, config.DC_ROT_CW)
     
     raw_input('enter to fold shirt collar')
-    rodYObj.move(60, 30)
+    rodYObj.setPosition(rodYObj.maxPos, 30) 
     rodYObj.rotate(0, config.DC_ROT_CW)
     
     raw_input('enter to retract tape')
@@ -564,7 +564,7 @@ def eventLoop():
         print "Homing"
         homeAll()
 
-        defaultFirstTwoFolds()
+        #defaultFirstTwoFolds()
         
         defaultFinalFold()
 
